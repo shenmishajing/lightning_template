@@ -5,18 +5,18 @@ from typing import Any, Callable, Dict, Optional, Tuple, Type, Union
 
 from lightning.pytorch.cli import (
     LightningArgumentParser,
-    LightningCLI,
+    LightningCLI as _LightningCLI,
     SaveConfigCallback,
 )
 
-from utils.callbacks.save_and_log_config_callback import SaveAndLogConfigCallback
-from utils.optim import get_configure_optimizers_method
+from lightning_template.utils.callbacks.save_and_log_config_callback import SaveAndLogConfigCallback
+from lightning_template.utils.optim import get_configure_optimizers_method
 
 from .argument_parsers import ActionJsonFile
 from .trainer import Trainer, _Trainer
 
 
-class CLI(LightningCLI):
+class LightningCLI(_LightningCLI):
     def __init__(
         self,
         save_config_callback: Optional[

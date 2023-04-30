@@ -2,11 +2,11 @@ import thop
 from lightning.pytorch.trainer.states import TrainerFn, TrainerStatus
 from lightning.pytorch.utilities import rank_zero_warn
 
-from utils import CLI
+from lightning_template.utils import LightningCLI
 
 
 def main():
-    cli = CLI(run=False)
+    cli = LightningCLI(run=False)
     trainer, model, datamodule = cli.trainer, cli.model, cli.datamodule
     if hasattr(datamodule, "data_loader_config"):
         datamodule.data_loader_config["batch_size"] = 1

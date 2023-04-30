@@ -1,12 +1,12 @@
 trainer:
     logger:
-        class_path: utils.loggers.wandb.WandbNamedLogger
+        class_path: lightning_template.utils.loggers.wandb.WandbNamedLogger
         init_args:
             project: default_project_name
             save_dir: work_dirs
             offline: false
     callbacks:
-        - class_path: utils.callbacks.model_checkpoint.ModelCheckpointWithLinkBest
+        - class_path: lightning_template.utils.callbacks.model_checkpoint.ModelCheckpointWithLinkBest
           init_args:
               monitor: val/loss
               filename: "epoch:{epoch}-val_loss:{val/loss:.4g}"
@@ -15,20 +15,20 @@ trainer:
               save_best: true
               mode: min
               auto_insert_metric_name: false
-        - class_path: utils.progress.rich_progress.RichDefaultThemeProgressBar
+        - class_path: lightning_template.utils.progress.rich_progress.RichDefaultThemeProgressBar
           init_args:
               show_version: false
               show_eta_time: true
         - class_path: lightning.pytorch.callbacks.RichModelSummary
           init_args:
               max_depth: 2
-        - class_path: utils.callbacks.set_precision_and_cudnn_callback.SetPrecisionAndCudnnCallback
+        - class_path: lightning_template.utils.callbacks.set_precision_and_cudnn_callback.SetPrecisionAndCudnnCallback
           init_args:
               float32_matmul_precision: high
               allow_fp16_reduced_precision_reduction: true
               deterministic_debug_mode: default
               cudnn_enabled: true
-        - class_path: utils.callbacks.set_wandb_logger_callback.SetWandbLoggerCallback
+        - class_path: lightning_template.utils.callbacks.set_wandb_logger_callback.SetWandbLoggerCallback
           init_args:
               watch_model_cfg:
                   log: all

@@ -1,9 +1,9 @@
 from lightning.pytorch.tuner import Tuner
 
-from utils import CLI as _CLI
+from lightning_template.utils import LightningCLI as _LightningCLI
 
 
-class CLI(_CLI):
+class LightningCLI(_LightningCLI):
     def before_instantiate_classes(self) -> None:
         """Implement to run some code before instantiating the classes."""
         super().before_instantiate_classes()
@@ -18,7 +18,7 @@ class CLI(_CLI):
 
 
 def main():
-    cli = CLI(run=False)
+    cli = LightningCLI(run=False)
     # Create a tuner for the trainer
     tuner = Tuner(cli.trainer)
 

@@ -1,9 +1,17 @@
-from typing import Optional
+from typing import Any, Optional
 
 from lightning.pytorch.loggers.wandb import WandbLogger
 
 
 class WandbNamedLogger(WandbLogger):
+    def __init__(
+        self,
+        entity: Optional[str] = None,
+        *args: Any,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(self, entity=entity, *args, **kwargs)
+
     @property
     def name(self) -> Optional[str]:
         """Gets the name of the experiment.

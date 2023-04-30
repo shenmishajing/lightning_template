@@ -111,7 +111,7 @@ def construct_lr_scheduler(lr_scheduler, optimizer):
             manual_lr_scheduler = {"scheduler": manual_lr_scheduler}
         if "class_path" not in manual_lr_scheduler["scheduler"]:
             manual_lr_scheduler["scheduler"] = {
-                "class_path": "utils.optim.WarmupScheduler",
+                "class_path": "lightning_template.utils.optim.WarmupScheduler",
                 "init_args": manual_lr_scheduler["scheduler"],
             }
         manual_lr_scheduler.setdefault("frequency", 1)

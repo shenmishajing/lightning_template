@@ -1,10 +1,10 @@
 from lightning.pytorch.tuner import Tuner
 
-from utils import CLI
+from lightning_template.utils import LightningCLI
 
 
 def main():
-    cli = CLI(run=False)
+    cli = LightningCLI(run=False)
     # Create a tuner for the trainer
     tuner = Tuner(cli.trainer)
 
