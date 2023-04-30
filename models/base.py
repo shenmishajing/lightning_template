@@ -127,7 +127,7 @@ class LightningModule(_LightningModule, ABC):
 
     def predict_step(self, *args, **kwargs):
         res = self.predict_forward(*args, **kwargs)
-        for name, path in self.predict_tasks:
+        for name, path in self.predict_tasks.items():
             getattr(self, name + "_visualization")(
                 output_path=path, *args, **kwargs, **res
             )
