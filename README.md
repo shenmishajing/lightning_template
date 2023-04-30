@@ -1,6 +1,6 @@
 ## Introduction
 
-A generic project template based on [pytorch lightning](https://pytorch-lightning.readthedocs.io/en/stable/)
+A generic project template lib based on [pytorch lightning](https://pytorch-lightning.readthedocs.io/en/stable/) for [project-template](https://github.com/shenmishajing/project_template)
 
 ## Feature
 
