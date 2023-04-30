@@ -10,7 +10,7 @@ class WandbNamedLogger(WandbLogger):
         *args: Any,
         **kwargs: Any,
     ) -> None:
-        super().__init__(self, entity=entity, *args, **kwargs)
+        super().__init__(*args, entity=entity, **kwargs)
 
     @property
     def name(self) -> Optional[str]:
