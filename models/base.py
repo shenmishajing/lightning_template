@@ -25,13 +25,23 @@ class LightningModule(_LightningModule, ABC):
     def __init__(
         self,
         loss_weights=None,
+        predict_tasks=None,
         *args,
         **kwargs,
     ) -> None:
         super().__init__(*args, **kwargs)
         self.automatic_lr_schedule = True
         self.manual_step_scedulers = []
-        self._output_paths = []
+
+        if predict_tasks is None:
+            predict_tasks = []
+        elif isinstance(predict_tasks, str):
+            predict_tasks = [predict_tasks]
+
+        for task in predict_tasks:
+            assert hasattr(self, task), f"task {task} is not supported!"
+
+        self.predict_tasks = {task: None for task in predict_tasks}
 
         # leave for auto lr finder
         self.lr = None
@@ -102,24 +112,22 @@ class LightningModule(_LightningModule, ABC):
             shutil.rmtree(path)
         os.makedirs(path, exist_ok=True)
 
-    @property
-    def output_paths(self):
-        return self._output_paths
-
     def on_predict_epoch_start(self) -> None:
         output_path = os.path.join(
             os.path.dirname(os.path.dirname(self.trainer.ckpt_path)), "visualization"
         )
 
-        for name in self.output_paths:
+        for name in self.predict_tasks:
             path = os.path.join(output_path, name)
             self.rm_and_create(path)
-            setattr(self, name + "_output_path", path)
+            self.predict_tasks[name] = path
 
     def predict_forward(self, *args, **kwargs):
         return {}
 
     def predict_step(self, *args, **kwargs):
         res = self.predict_forward(*args, **kwargs)
-        for name in self.output_paths:
-            getattr(self, name + "_visualization")(*args, **kwargs, **res)
+        for name, path in self.predict_tasks:
+            getattr(self, name + "_visualization")(
+                output_path=path, *args, **kwargs, **res
+            )
