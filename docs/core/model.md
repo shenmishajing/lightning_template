@@ -4,7 +4,7 @@ The base LightningModule to inherit.
 
 ## Arguments and config
 
-The base LightningModule has only one argument named `loss_weights` which is a dict, if you use the `loss_step` method from the base LightningModule, the loss dict will multi the loss weight dict before calculate the total loss.
+The base LightningModule has two arguments named `model` and `loss_weights`. `model` is a normal `torch.nn.Module` to fit or predict etc., and `loss_weights` is a dict, if you use the `loss_step` method from the base LightningModule, the loss dict will multi the loss weight dict before calculate the total loss.
 
 ## Manual lr scheduler
 
