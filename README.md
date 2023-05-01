@@ -36,3 +36,5 @@ Set `num_folds` of trainer to a int bigger than one to start cross-validation, f
 ### Config files
 
 See [config file structure](docs/configs/config_file_structure.md), [deep update](docs/configs/deep_update.md), [yaml with merge](docs/configs/argument_parsers/yaml_with_merge.md) and [json file](docs/configs/argument_parsers/json_file.md)
+
+You can get some example from [project_template](https://github.com/shenmishajing/project_template)

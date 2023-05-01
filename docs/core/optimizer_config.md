@@ -34,7 +34,7 @@ optimizer_config:
             name: None
             warmup_config:
                 scheduler:
-                    class_path: utils.optim.WarmupScheduler
+                    class_path: lightning_template.utils.optim.WarmupScheduler
                     init_args:
                         warmup_iters: 500
                 frequency: 1
@@ -62,7 +62,7 @@ optimizer_config:
             name: None
             warmup_config:
                 scheduler:
-                    class_path: utils.optim.WarmupScheduler
+                    class_path: lightning_template.utils.optim.WarmupScheduler
                     init_args:
                         warmup_iters: 500
                 frequency: 1
@@ -194,7 +194,7 @@ A complete warmup lr scheduler config will look like:
 # warmup lr scheduler config object
 warmup_config:
     scheduler:
-        class_path: utils.optim.WarmupScheduler
+        class_path: lightning_template.utils.optim.WarmupScheduler
         init_args:
             warmup_iters: 500
     frequency: 1
@@ -205,7 +205,7 @@ As the `frequecy` is optional, you omit it, and use a [lr scheduler config](#lr-
 ```yaml
 # warmup lr scheduler config object
 warmup_config:
-    class_path: utils.optim.WarmupScheduler
+    class_path: lightning_template.utils.optim.WarmupScheduler
     init_args:
         warmup_iters: 500
 ```
