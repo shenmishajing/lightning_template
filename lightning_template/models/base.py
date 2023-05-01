@@ -24,14 +24,16 @@ def flatten_dict(log_dict, prefix="train", sep="/"):
 class LightningModule(_LightningModule, ABC):
     def __init__(
         self,
+        model: torch.nn.Module,
         loss_weights=None,
         predict_tasks=None,
         *args,
         **kwargs,
     ) -> None:
         super().__init__(*args, **kwargs)
-        self.automatic_lr_schedule = True
-        self.manual_step_scedulers = []
+
+        self.model = model
+        self.loss_weights = loss_weights
 
         if predict_tasks is None:
             predict_tasks = []
@@ -45,8 +47,8 @@ class LightningModule(_LightningModule, ABC):
 
         # leave for auto lr finder
         self.lr = None
-
-        self.loss_weights = loss_weights
+        self.automatic_lr_schedule = True
+        self.manual_step_scedulers = []
 
     def optimizer_step(self, *args, **kwargs) -> None:
         # update params
@@ -62,7 +64,7 @@ class LightningModule(_LightningModule, ABC):
         return flatten_dict(log_dict, prefix, sep)
 
     def forward(self, *args, **kwargs):
-        raise NotImplementedError
+        return self.model(*args, **kwargs)
 
     def _loss_step(self, batch, output, *args, **kwargs):
         return output
