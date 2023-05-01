@@ -41,7 +41,7 @@ class LightningModule(_LightningModule, ABC):
             predict_tasks = [predict_tasks]
 
         for task in predict_tasks:
-            assert hasattr(self, task), f"task {task} is not supported!"
+            assert hasattr(self, "predict_" + task), f"task {task} is not supported!"
 
         self.predict_tasks = {task: None for task in predict_tasks}
 
