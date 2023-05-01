@@ -7,7 +7,7 @@ with open("README.md", "r") as f:
 
 setup(
     name="lightning-template",
-    version="1.0.2",
+    version="1.0.3",
     description="A template wrapper for pytorch-lightning.",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -31,6 +31,7 @@ setup(
             "cli = lightning_template.tools.cli:main",
             "lr_finder = lightning_template.tools.model.lr_finder:main",
             "batch_size_finder = lightning_template.tools.model.batch_size_finder:main",
+            "model_statistics = lightning_template.tools.model.model_statistics:main",
         ]
     },
     platforms=["all"],
