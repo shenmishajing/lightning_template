@@ -27,6 +27,7 @@ class LightningModule(_LightningModule, ABC):
         model: torch.nn.Module,
         loss_weights=None,
         predict_tasks=None,
+        predict_path=None,
         *args,
         **kwargs,
     ) -> None:
@@ -43,7 +44,7 @@ class LightningModule(_LightningModule, ABC):
         for task in predict_tasks:
             assert hasattr(self, "predict_" + task), f"task {task} is not supported!"
 
-        self.predict_tasks = {task: None for task in predict_tasks}
+        self.predict_tasks = {task: predict_path for task in predict_tasks}
 
         # leave for auto lr finder
         self.lr = None
@@ -115,14 +116,25 @@ class LightningModule(_LightningModule, ABC):
         os.makedirs(path, exist_ok=True)
 
     def on_predict_epoch_start(self) -> None:
-        output_path = os.path.join(
-            os.path.dirname(os.path.dirname(self.trainer.ckpt_path)), "visualization"
-        )
+        if self.trainer.ckpt_path:
+            output_path = os.path.join(
+                os.path.dirname(os.path.dirname(self.trainer.ckpt_path)),
+                "visualization",
+            )
+        else:
+            output_path = None
 
         for name in self.predict_tasks:
-            path = os.path.join(output_path, name)
-            self.rm_and_create(path)
-            self.predict_tasks[name] = path
+            if self.predict_tasks[name] is None:
+                if output_path is None:
+                    raise ValueError(
+                        "predict_path is None, please set predict_path or pass ckpt_path"
+                    )
+
+                self.predict_tasks[name] = output_path
+
+            self.predict_tasks[name] = os.path.join(self.predict_tasks[name], name)
+            self.rm_and_create(self.predict_tasks[name])
 
     def predict_forward(self, *args, **kwargs):
         return {}
