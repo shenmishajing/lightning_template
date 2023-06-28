@@ -9,10 +9,6 @@ from pandas import DataFrame
 from lightning_template.utils.visualization import draw_line_chart
 
 
-def cuda_sync():
-    torch.cuda.synchronize()
-
-
 def visualize_speed_benchmark_res(result, output_path, main_arg_name, save_table):
     index = sorted(result)
     data = {}
@@ -47,13 +43,36 @@ def visualize_speed_benchmark_res(result, output_path, main_arg_name, save_table
     )
 
 
+def check_results(x, y):
+    if type(x) != type(y):
+        return False
+
+    if isinstance(x, tuple | list):
+        return all([check_results(x[i], y[i]) for i in range(len(x))])
+    if isinstance(x, dict):
+        if set(x.keys()) != set(y.keys()):
+            return False
+        return all([check_results(x[k], y[k]) for k in x])
+
+    if isinstance(x, np.ndarray):
+        return np.allclose(x, y)
+    if isinstance(x, torch.Tensor):
+        return torch.allclose(x, y)
+    if isinstance(x, float):
+        return np.isclose(x, y)
+
+    return x == y or x is y
+
+
 def speed_benchmark(
     funcs,
     args,
     pre_func=None,
     post_func=None,
     repeat=3,
-    check_res_func=None,
+    num=1,
+    check_result=True,
+    check_result_func=None,
     root_path="work_dir/speed_benchmark",
     experiment_name=None,
     save_json=True,
@@ -63,42 +82,47 @@ def speed_benchmark(
     if not isinstance(funcs, list):
         funcs = [funcs]
 
-    if not isinstance(args["data"], list):
-        args["data"] = [args["data"]]
+    if not isinstance(args["data"], dict):
+        args["data"] = {d[args["main_arg_name"]]: d for d in args["data"]}
 
     if pre_func is None:
-        pre_func = cuda_sync
+        pre_func = torch.cuda.synchronize
     if post_func is None:
-        post_func = cuda_sync
+        post_func = torch.cuda.synchronize
+
+    if check_result and check_result_func is None:
+        check_result_func = check_results
 
     if experiment_name is not None:
         root_path = os.path.join(root_path, experiment_name)
     os.makedirs(root_path, exist_ok=True)
 
     result = {}
-    for data in args["data"]:
-        result[data[args["main_arg_name"]]] = {}
+    for main_arg, data in args["data"].items():
+        result[main_arg] = {}
         except_res = None
         for func in funcs:
-            result[data[args["main_arg_name"]]][func.__name__] = []
-            cur_res = result[data[args["main_arg_name"]]][func.__name__]
+            result[main_arg][func.__name__] = []
+            cur_res = result[main_arg][func.__name__]
             for _ in range(repeat):
                 pre_func()
                 duration = time.perf_counter()
-                func_res = func(**data)
+                for _ in range(num):
+                    func_res = func(**data)
                 post_func()
                 duration = time.perf_counter() - duration
+                duration /= num
 
                 cur_res.append(duration)
 
-                if check_res_func is not None:
-                    if except_res is None:
-                        except_res = func_res
-                    else:
-                        if not check_res_func(except_res, func_res):
-                            print(
-                                f'result from func {func.__name__} is not correct on data with {data[args["main_arg_name"]]} = {data[args["main_arg_name"]]}'
-                            )
+            if check_result_func is not None:
+                if except_res is None:
+                    except_res = func_res
+                else:
+                    if not check_result_func(except_res, func_res):
+                        print(
+                            f'result from func {func.__name__} is not correct on data with {args["main_arg_name"]} = {main_arg}'
+                        )
 
     if save_json:
         json.dump(result, open(os.path.join(root_path, "result.json"), "w"))
