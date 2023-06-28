@@ -38,3 +38,7 @@ Set `num_folds` of the trainer to an int bigger than one to start cross-validati
 See [config file structure](docs/configs/config_file_structure.md), [deep update](docs/configs/deep_update.md), [yaml [with merge](docs/configs/argument_parsers/yaml_with_merge.md), and [json file](docs/configs/argument_parsers/json_file.md)](docs/configs/argument_parsers/json_file.md)
 
 You can get some examples from [project_template](https://github.com/shenmishajing/project_template)
+
+### Speed Benchmark
+
+See [speed benchmark doc](docs/tools/speed_benchmark.md)

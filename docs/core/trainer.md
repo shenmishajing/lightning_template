@@ -6,4 +6,4 @@ Trainer from [lightning](https://pytorch-lightning.readthedocs.io/en/stable/comm
 
 ### Cross-validation
 
-Set `num_folds` argument to a int bigger than `1`, to use the cross-validation featuer with `num_folds` folds.
+Set `num_folds` argument to an int bigger than `1`, to use the cross-validation feature with `num_folds` folds.
