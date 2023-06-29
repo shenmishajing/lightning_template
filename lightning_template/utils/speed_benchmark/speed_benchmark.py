@@ -71,9 +71,10 @@ def speed_benchmark(
     post_func=None,
     repeat=3,
     num=1,
+    warmup=1,
     check_result=True,
     check_result_func=None,
-    root_path="work_dir/speed_benchmark",
+    root_path="work_dirs/speed_benchmark",
     experiment_name=None,
     save_json=True,
     save_table=True,
@@ -104,6 +105,10 @@ def speed_benchmark(
         for func in funcs:
             result[main_arg][func.__name__] = []
             cur_res = result[main_arg][func.__name__]
+
+            for _ in range(warmup):
+                func(**data)
+
             for _ in range(repeat):
                 pre_func()
                 duration = time.perf_counter()
