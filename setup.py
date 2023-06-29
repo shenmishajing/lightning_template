@@ -7,7 +7,7 @@ with open("README.md", "r") as f:
 
 setup(
     name="lightning-template",
-    version="1.0.15",
+    version="1.0.16",
     description="A template wrapper for pytorch-lightning.",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -23,6 +23,8 @@ setup(
         "lightning>=2.0.0",
         "jsonargparse[all]",
         "scikit-learn",
+        "pandas",
+        "matplotlib",
     ],
     license="MIT License",
     packages=find_packages(),  # 包
