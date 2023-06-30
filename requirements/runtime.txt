@@ -1,5 +1,4 @@
-pandas
-matplotlib
 scikit-learn
 lightning
 jsonargparse[all]
+speed-benchmark

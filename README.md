@@ -41,4 +41,4 @@ You can get some examples from [project_template](https://github.com/shenmishaji
 
 ### Speed Benchmark
 
-See [speed benchmark doc](docs/tools/speed_benchmark.md)
+See [speed benchmark lib](https://github.com/shenmishajing/speed_benchmark)
