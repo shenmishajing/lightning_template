@@ -95,8 +95,13 @@ class LightningDataModule(_LightningDataModule):
     def _build_dataset(self, split):
         self.datasets[split] = instantiate_class(tuple(), self.dataset_cfg[split])
 
-    def _build_collate_fn(self, collate_fn_cfg):
-        return None
+    def _build_collate_fn(self, collate_fn_cfg, dataset):
+        if hasattr(dataset, "collate_fn"):
+            return dataset.collate_fn
+        elif collate_fn_cfg:
+            return instantiate_class(tuple(), collate_fn_cfg)
+        else:
+            return None
 
     def _build_sampler(self, dataloader_cfg, dataset):
         if "shuffle" in dataloader_cfg:
@@ -129,7 +134,7 @@ class LightningDataModule(_LightningDataModule):
         if set_batch_size:
             dataloader_cfg["batch_size"] = self.batch_size
         dataloader_cfg["collate_fn"] = self._build_collate_fn(
-            dataloader_cfg.get("collate_fn", {})
+            dataloader_cfg.get("collate_fn", {}), dataset
         )
         return DataLoader(
             dataset, **self._handle_batch_sampler(dataloader_cfg, dataset, split=split)
