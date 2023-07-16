@@ -1,15 +1,18 @@
 import os
+import sys
 import time
 from types import MethodType
 from typing import Any, Callable, Dict, Optional, Tuple, Type, Union
 
-from lightning.pytorch.cli import (
-    LightningArgumentParser,
-    LightningCLI as _LightningCLI,
-    SaveConfigCallback,
-)
+from lightning.pytorch import Trainer
+from lightning.pytorch.cli import ArgsType, LightningArgumentParser
+from lightning.pytorch.cli import LightningCLI as _LightningCLI
+from lightning.pytorch.cli import Namespace, SaveConfigCallback
+from lightning.pytorch.utilities.rank_zero import rank_zero_warn
 
-from lightning_template.utils.callbacks.save_and_log_config_callback import SaveAndLogConfigCallback
+from lightning_template.utils.callbacks.save_and_log_config_callback import (
+    SaveAndLogConfigCallback,
+)
 from lightning_template.utils.optim import get_configure_optimizers_method
 
 from .argument_parsers import ActionJsonFile
@@ -24,13 +27,13 @@ class LightningCLI(_LightningCLI):
         ] = SaveAndLogConfigCallback,
         trainer_class: Union[Type[_Trainer], Callable[..., _Trainer]] = Trainer,
         *args,
-        **kwargs
+        **kwargs,
     ) -> None:
         super().__init__(
             save_config_callback=save_config_callback,
             trainer_class=trainer_class,
             *args,
-            **kwargs
+            **kwargs,
         )
 
     def _setup_parser_kwargs(
@@ -58,6 +61,19 @@ class LightningCLI(_LightningCLI):
             default=None,
             help="Configuration for the optimizers and lr schedulers.",
         )
+
+    def parse_arguments(self, parser: LightningArgumentParser, args: ArgsType) -> None:
+        """Parses command line arguments and stores it in ``self.config``."""
+        if args is not None and len(sys.argv) > 1:
+            rank_zero_warn(
+                "LightningCLI's args parameter is intended to run from within Python like if it were from the command "
+                "line. To prevent mistakes it is not recommended to provide both args and command line arguments, got: "
+                f"sys.argv[1:]={sys.argv[1:]}, args={args}."
+            )
+        if isinstance(args, (dict, Namespace)):
+            self.config = parser.parse_object(args, defaults=False)
+        else:
+            self.config = parser.parse_args(args, defaults=False)
 
     def before_instantiate_classes(self) -> None:
         """Implement to run some code before instantiating the classes."""

@@ -4,26 +4,19 @@ from typing import Any, Dict, Optional, Union
 
 import lightning.pytorch as pl
 from lightning.pytorch.callbacks.progress.rich_progress import (
-    RichProgressBar,
-    RichProgressBarTheme,
+    RichProgressBar as _RichProgressBar,
 )
 
 
-class RichDefaultThemeProgressBar(RichProgressBar):
+class RichProgressBar(_RichProgressBar):
     def __init__(
         self,
-        refresh_rate: int = 1,
-        leave: bool = False,
-        console_kwargs: Optional[Dict[str, Any]] = None,
         show_version: Optional[bool] = False,
         show_eta_time: Optional[bool] = False,
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
-        super().__init__(
-            refresh_rate=refresh_rate,
-            leave=leave,
-            theme=RichProgressBarTheme(),
-            console_kwargs=console_kwargs,
-        )
+        super().__init__(*args, **kwargs)
         self.show_version = show_version
         self.show_eta_time = show_eta_time
 
@@ -37,9 +30,11 @@ class RichDefaultThemeProgressBar(RichProgressBar):
         self, trainer: "pl.Trainer", pl_module: "pl.LightningModule"
     ) -> Dict[str, Union[int, str]]:
         items = super().get_metrics(trainer, pl_module)
+
         if not self.show_version:
             # don't show the version number
             items.pop("v_num", None)
+
         if (
             self.show_eta_time
             and self.trainer.training
