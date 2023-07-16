@@ -8,19 +8,6 @@ from lightning.pytorch import LightningModule as _LightningModule
 from lightning.pytorch.utilities.rank_zero import rank_zero_only
 
 
-def _flatten_dict_gen(log_dict, prefix="train", sep="/"):
-    for k, v in log_dict.items():
-        new_key = prefix + sep + k if prefix else k
-        if isinstance(v, Mapping):
-            yield from flatten_dict(v, new_key, sep=sep).items()
-        else:
-            yield new_key, v
-
-
-def flatten_dict(log_dict, prefix="train", sep="/"):
-    return dict(_flatten_dict_gen(log_dict, prefix, sep))
-
-
 class LightningModule(_LightningModule, ABC):
     def __init__(
         self,
@@ -62,7 +49,15 @@ class LightningModule(_LightningModule, ABC):
 
     @staticmethod
     def flatten_dict(log_dict, prefix="train", sep="/"):
-        return flatten_dict(log_dict, prefix, sep)
+        res_dict = {}
+
+        for k, v in log_dict.items():
+            new_key = prefix + sep + k if prefix else k
+            if isinstance(v, Mapping):
+                res_dict[new_key] = LightningModule.flatten_dict(v, new_key, sep=sep)
+            else:
+                res_dict[new_key] = v
+        return res_dict
 
     def forward(self, *args, **kwargs):
         return self.model(*args, **kwargs)
