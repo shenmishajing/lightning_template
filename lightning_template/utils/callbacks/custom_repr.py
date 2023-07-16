@@ -5,10 +5,10 @@ def custom_repr(original_repr):
     def wrapper(self):
         shape_str = ""
         if hasattr(self, "shape"):
-            shape_str = f":{tuple(self.shape)}"
+            shape_str = f"{tuple(self.shape)}"
         elif hasattr(self, "__len__"):
-            shape_str = f":{len(self)}"
-        return f"{{{self.__class__.__name__}{shape_str}}} {original_repr(self)}"
+            shape_str = f"{len(self)}"
+        return f"{shape_str}{original_repr(self)}"
 
     return wrapper
 
