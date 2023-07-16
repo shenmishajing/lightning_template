@@ -10,7 +10,7 @@ from lightning.pytorch.core.datamodule import (
 from sklearn.model_selection import KFold
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler, Subset
 
-from lightning_template.utils import deep_update
+from lightning_template.utils.cli import deep_update
 
 
 class LightningDataModule(_LightningDataModule):

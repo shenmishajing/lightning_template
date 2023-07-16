@@ -1,4 +1,4 @@
-from lightning_template.utils.cli import LightningCLI
+from lightning_template.utils import LightningCLI
 
 
 def main():
