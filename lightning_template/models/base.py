@@ -6,11 +6,11 @@ import torch
 from lightning.pytorch import LightningModule as _LightningModule
 from lightning.pytorch.utilities.rank_zero import rank_zero_only
 
-from lightning_template.utils.cli import get_split_config, recursive_instantate_class
+from lightning_template.utils.cli import recursive_instantate_class
 from lightning_template.utils.mixin import SplitNameMixin
 
 
-class LightningModule(_LightningModule, SplitNameMixin):
+class LightningModule(SplitNameMixin, _LightningModule):
     def __init__(
         self,
         model: torch.nn.Module,
@@ -27,7 +27,7 @@ class LightningModule(_LightningModule, SplitNameMixin):
         self.evaluators = torch.nn.ModuleDict()
         self.loss_weights = loss_weights
 
-        self.evaluator_cfg = get_split_config(evaluator_cfg)
+        self.evaluator_cfg = self.get_split_config(evaluator_cfg)
 
         if predict_tasks is None:
             predict_tasks = []

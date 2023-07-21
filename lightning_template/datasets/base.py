@@ -7,11 +7,11 @@ from lightning.pytorch.core.datamodule import (
 from sklearn.model_selection import KFold
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler, Subset
 
-from lightning_template.utils.cli import get_split_config, recursive_instantate_class
+from lightning_template.utils.cli import recursive_instantate_class
 from lightning_template.utils.mixin import SplitNameMixin
 
 
-class LightningDataModule(_LightningDataModule, SplitNameMixin):
+class LightningDataModule(SplitNameMixin, _LightningDataModule):
     def __init__(
         self,
         dataset_cfg: dict = None,
@@ -25,8 +25,8 @@ class LightningDataModule(_LightningDataModule, SplitNameMixin):
         self.splits = []
         self.batch_size = None
 
-        self.dataset_cfg = get_split_config(dataset_cfg)
-        self.dataloader_cfg = get_split_config(dataloader_cfg)
+        self.dataset_cfg = self.get_split_config(dataset_cfg)
+        self.dataloader_cfg = self.get_split_config(dataloader_cfg)
 
     def _build_dataset(self, split):
         self.datasets[split] = recursive_instantate_class(self.dataset_cfg[split])
