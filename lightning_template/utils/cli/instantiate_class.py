@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-from jsonargparse._typehints import is_subclass_spec
+from jsonargparse.typehints import is_subclass_spec
 from lightning.pytorch.cli import instantiate_class
 
 
