@@ -68,7 +68,7 @@ class LightningModule(SplitNameMixin, _LightningModule):
                 scheduler["scheduler"].step()
 
     @staticmethod
-    def flatten_dict(log_dict, prefix="train", sep="/"):
+    def flatten_dict(log_dict, prefix, sep="/"):
         res_dict = {}
 
         for k, v in log_dict.items():
@@ -100,13 +100,13 @@ class LightningModule(SplitNameMixin, _LightningModule):
             )
         return loss
 
-    def metric_step(self, batch, output, *args, split="val", **kwargs):
+    def metric_step(self, batch, output, *args, split, **kwargs):
         if self.evaluators[split]:
             return self.evaluators[split].update(batch, output)
         else:
             return {}
 
-    def on_metric_epoch_end(self, *args, split="val", **kwargs):
+    def on_metric_epoch_end(self, *args, split, **kwargs):
         if self.evaluators[split]:
             return self.evaluators[split].compute()
         else:
@@ -124,7 +124,9 @@ class LightningModule(SplitNameMixin, _LightningModule):
         log_dict.update(metrics)
 
         # log
-        self.log_dict(self.flatten_dict(log_dict, split), sync_dist=split != "train")
+        self.log_dict(
+            self.flatten_dict(log_dict, split), sync_dist=split != self.TrainSplit
+        )
 
         # return loss
         return log_dict
@@ -133,25 +135,27 @@ class LightningModule(SplitNameMixin, _LightningModule):
         metrics = self.on_metric_epoch_end(split=split, *args, **kwargs)
 
         if metrics:
-            self.log_dict(self.flatten_dict(metrics, split), sync_dist=split != "train")
+            self.log_dict(
+                self.flatten_dict(metrics, split), sync_dist=split != self.TrainSplit
+            )
 
     def training_step(self, *args, **kwargs):
-        return self.forward_step(split="train", *args, **kwargs)
+        return self.forward_step(split=self.TrainSplit, *args, **kwargs)
 
     def on_training_epoch_end(self, *args, **kwargs):
-        return self.on_forward_epoch_end(split="train", *args, **kwargs)
+        return self.on_forward_epoch_end(split=self.TrainSplit, *args, **kwargs)
 
     def validation_step(self, *args, **kwargs):
-        return self.forward_step(split="val", *args, **kwargs)
+        return self.forward_step(split=self.ValidateSplit, *args, **kwargs)
 
     def on_validation_epoch_end(self, *args, **kwargs):
-        return self.on_forward_epoch_end(split="val", *args, **kwargs)
+        return self.on_forward_epoch_end(split=self.ValidateSplit, *args, **kwargs)
 
     def test_step(self, *args, **kwargs):
-        return self.forward_step(split="test", *args, **kwargs)
+        return self.forward_step(split=self.TestSplit, *args, **kwargs)
 
     def on_test_epoch_end(self, *args, **kwargs):
-        return self.on_forward_epoch_end(split="test", *args, **kwargs)
+        return self.on_forward_epoch_end(split=self.TestSplit, *args, **kwargs)
 
     @staticmethod
     @rank_zero_only

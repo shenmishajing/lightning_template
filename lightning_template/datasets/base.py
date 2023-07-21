@@ -54,7 +54,7 @@ class LightningDataModule(SplitNameMixin, _LightningDataModule):
     def _build_batch_sampler(self, batch_sampler_cfg, dataset, *args):
         return instantiate_class(args, batch_sampler_cfg)
 
-    def _handle_batch_sampler(self, dataloader_cfg, dataset, split="train"):
+    def _handle_batch_sampler(self, dataloader_cfg, dataset, *arg, **kwargs):
         if "batch_sampler" in dataloader_cfg:
             if "init_args" not in dataloader_cfg["batch_sampler"]:
                 dataloader_cfg["batch_sampler"]["init_args"] = {}
@@ -74,7 +74,7 @@ class LightningDataModule(SplitNameMixin, _LightningDataModule):
             )
         return dataloader_cfg
 
-    def _build_dataloader(self, dataset, split="train", set_batch_size=False):
+    def _build_dataloader(self, dataset, split, set_batch_size=False):
         dataloader_cfg = copy.deepcopy(self.dataloader_cfg.get(split, {}))
         if set_batch_size:
             dataloader_cfg["batch_size"] = self.batch_size
@@ -108,20 +108,22 @@ class LightningDataModule(SplitNameMixin, _LightningDataModule):
         ]
 
     def setup_fold_index(self, fold_index: int) -> None:
-        for indices, fold_name in zip(self.splits[fold_index], ["train", "val"]):
+        for indices, fold_name in zip(
+            self.splits[fold_index], [self.TrainSplit, self.ValidateSplit]
+        ):
             self.folds[fold_name] = Subset(self.dataset, indices)
 
-        for fold_name in ["test", "predict"]:
-            self.folds[fold_name] = self.folds["val"]
+        for fold_name in [self.TestSplit, self.PredictSplit]:
+            self.folds[fold_name] = self.folds[self.ValidateSplit]
 
     def train_dataloader(self):
-        return self._dataloader("train")
+        return self._dataloader(self.TrainSplit)
 
     def val_dataloader(self):
-        return self._dataloader("val")
+        return self._dataloader(self.ValidateSplit)
 
     def test_dataloader(self):
-        return self._dataloader("test")
+        return self._dataloader(self.TestSplit)
 
     def predict_dataloader(self):
-        return self._dataloader("predict")
+        return self._dataloader(self.PredictSplit)
