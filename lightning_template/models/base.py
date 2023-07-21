@@ -79,8 +79,8 @@ class LightningModule(SplitNameMixin, _LightningModule):
                 res_dict[new_key] = v
         return res_dict
 
-    def forward(self, *args, **kwargs):
-        return self.model(*args, **kwargs)
+    def forward(self, batch, *args, **kwargs):
+        return self.model(batch)
 
     def _loss_step(self, batch, output, *args, **kwargs):
         return output
@@ -102,26 +102,23 @@ class LightningModule(SplitNameMixin, _LightningModule):
 
     def metric_step(self, batch, output, *args, split, **kwargs):
         if self.evaluators[split]:
-            return self.evaluators[split].update(batch, output)
-        else:
-            return {}
+            self.evaluators[split].update(output["pred"], output["target"])
 
     def on_metric_epoch_end(self, *args, split, **kwargs):
         if self.evaluators[split]:
             return self.evaluators[split].compute()
-        else:
-            return {}
 
     def forward_step(self, batch, *args, split, **kwargs):
         # forward
-        output = self(batch, *args, **kwargs)
+        output = self(batch, *args, split=split, **kwargs)
 
         # loss
-        log_dict = self.loss_step(batch, output, *args, **kwargs)
+        log_dict = self.loss_step(batch, output, *args, split=split, **kwargs)
 
         # metrics
         metrics = self.metric_step(batch, output, split=split, *args, **kwargs)
-        log_dict.update(metrics)
+        if metrics:
+            log_dict.update(metrics)
 
         # log
         self.log_dict(
@@ -132,11 +129,11 @@ class LightningModule(SplitNameMixin, _LightningModule):
         return log_dict
 
     def on_forward_epoch_end(self, split, *args, **kwargs):
-        metrics = self.on_metric_epoch_end(split=split, *args, **kwargs)
+        log_dict = self.on_metric_epoch_end(split=split, *args, **kwargs)
 
-        if metrics:
+        if log_dict:
             self.log_dict(
-                self.flatten_dict(metrics, split), sync_dist=split != self.TrainSplit
+                self.flatten_dict(log_dict, split), sync_dist=split != self.TrainSplit
             )
 
     def training_step(self, *args, **kwargs):
