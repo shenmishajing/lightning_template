@@ -112,7 +112,7 @@ class LightningModule(SplitNameMixin, _LightningModule):
 
     def on_metric_epoch_end(self, *args, split, **kwargs):
         if self.evaluators[split]:
-            return self.evaluators[split].compute()
+            return self.evaluators[split]
 
     def forward_step(self, batch, *args, split, **kwargs):
         # forward
