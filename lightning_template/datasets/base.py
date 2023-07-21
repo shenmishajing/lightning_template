@@ -1,7 +1,4 @@
 import copy
-import string
-from collections.abc import Mapping
-from typing import List
 
 from lightning.pytorch.cli import instantiate_class
 from lightning.pytorch.core.datamodule import (
@@ -10,17 +7,17 @@ from lightning.pytorch.core.datamodule import (
 from sklearn.model_selection import KFold
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler, Subset
 
-from lightning_template.utils.cli import deep_update
+from lightning_template.utils.cli import get_split_config, recursive_instantate_class
+from lightning_template.utils.mixin import SplitNameMixin
 
 
-class LightningDataModule(_LightningDataModule):
+class LightningDataModule(_LightningDataModule, SplitNameMixin):
     def __init__(
         self,
         dataset_cfg: dict = None,
         dataloader_cfg: dict = None,
     ):
         super().__init__()
-        self.split_names = ["train", "val", "test", "predict"]
         self.datasets = {}
         self.dataset = None
         self.num_folds = None
@@ -28,78 +25,17 @@ class LightningDataModule(_LightningDataModule):
         self.splits = []
         self.batch_size = None
 
-        self.dataset_cfg = self.get_split_config(dataset_cfg)
-        self.dataloader_cfg = self.get_split_config(dataloader_cfg)
-
-    def get_split_config(self, config):
-        if isinstance(config, Mapping):
-            if all([config.get(name) is None for name in self.split_names]):
-                return {name: copy.deepcopy(config) for name in self.split_names}
-            else:
-                res = {}
-                last_name = None
-                for name in self.split_names:
-                    if last_name is None:
-                        res[name] = copy.deepcopy(config[name])
-                    else:
-                        res[name] = deep_update(
-                            copy.deepcopy(res[last_name]), config.get(name, {})
-                        )
-                    last_name = name
-
-                if "split_info" in config and "split_format_to" in config["split_info"]:
-                    config = config["split_info"]
-
-                    if not isinstance(config["split_format_to"], List):
-                        config["split_format_to"] = [config["split_format_to"]]
-
-                    split_name_map = {
-                        "train": "train",
-                        "val": "val",
-                        "test": "val",
-                        "predict": "val",
-                    }
-                    split_name_map.update(config.get("split_name_map", {}))
-                    config["split_name_map"] = split_name_map
-
-                    config.setdefault("split_prefix", "init_args")
-                    config.setdefault("split_attr_split_str", ".")
-
-                    for name in self.split_names:
-                        for split_attr in config["split_format_to"]:
-                            cur_cfg = res[name]
-                            if config["split_prefix"] is not None:
-                                for s in config["split_prefix"].split(
-                                    config["split_attr_split_str"]
-                                ):
-                                    if s not in cur_cfg:
-                                        cur_cfg[s] = {}
-                                    cur_cfg = cur_cfg[s]
-
-                            split_attr = split_attr.split(
-                                config["split_attr_split_str"]
-                            )
-                            for s in split_attr[:-1]:
-                                cur_cfg = cur_cfg[s]
-                            split_attr = split_attr[-1]
-                            cur_cfg[split_attr] = string.Template(
-                                cur_cfg.get(split_attr, "$split")
-                            ).safe_substitute(split=config["split_name_map"][name])
-                return res
-        else:
-            return {
-                name: copy.deepcopy(config) if config else {}
-                for name in self.split_names
-            }
+        self.dataset_cfg = get_split_config(dataset_cfg)
+        self.dataloader_cfg = get_split_config(dataloader_cfg)
 
     def _build_dataset(self, split):
-        self.datasets[split] = instantiate_class(tuple(), self.dataset_cfg[split])
+        self.datasets[split] = recursive_instantate_class(self.dataset_cfg[split])
 
     def _build_collate_fn(self, collate_fn_cfg, dataset):
         if hasattr(dataset, "collate_fn"):
             return dataset.collate_fn
         elif collate_fn_cfg:
-            return instantiate_class(tuple(), collate_fn_cfg)
+            return recursive_instantate_class(collate_fn_cfg)
         else:
             return None
 
@@ -120,12 +56,21 @@ class LightningDataModule(_LightningDataModule):
 
     def _handle_batch_sampler(self, dataloader_cfg, dataset, split="train"):
         if "batch_sampler" in dataloader_cfg:
+            if "init_args" not in dataloader_cfg["batch_sampler"]:
+                dataloader_cfg["batch_sampler"]["init_args"] = {}
+
+            dataloader_cfg["batch_sampler"]["init_args"][
+                "batch_size"
+            ] = dataloader_cfg.pop("batch_size", 1)
+            dataloader_cfg["batch_sampler"]["init_args"][
+                "drop_last"
+            ] = dataloader_cfg.pop("drop_last", False)
+            dataloader_cfg["batch_sampler"]["init_args"][
+                "sampler"
+            ] = self._build_sampler(dataloader_cfg, dataset)
+
             dataloader_cfg["batch_sampler"] = self._build_batch_sampler(
-                dataloader_cfg["batch_sampler"],
-                dataset,
-                self._build_sampler(dataloader_cfg, dataset),
-                dataloader_cfg.pop("batch_size", 1),
-                dataloader_cfg.pop("drop_last", False),
+                dataloader_cfg["batch_sampler"], dataset
             )
         return dataloader_cfg
 
@@ -148,21 +93,8 @@ class LightningDataModule(_LightningDataModule):
             **kwargs
         )
 
-    def _get_split_names(self, stage=None):
-        if self.trainer.overfit_batches > 0:
-            split_names = ["train"]
-        elif stage is None:
-            split_names = self.split_names
-        elif stage == "fit":
-            split_names = ["train", "val"]
-        elif stage == "validate":
-            split_names = ["val"]
-        else:
-            split_names = [stage.lower()]
-        return split_names
-
     def setup(self, stage=None):
-        self.split_names = self._get_split_names(stage)
+        super().setup(stage=stage)
 
         for name in self.split_names:
             self._build_dataset(name)

@@ -1,17 +1,20 @@
 import os
 import shutil
-from abc import ABC
 from typing import Mapping
 
 import torch
 from lightning.pytorch import LightningModule as _LightningModule
 from lightning.pytorch.utilities.rank_zero import rank_zero_only
 
+from lightning_template.utils.cli import get_split_config, recursive_instantate_class
+from lightning_template.utils.mixin import SplitNameMixin
 
-class LightningModule(_LightningModule, ABC):
+
+class LightningModule(_LightningModule, SplitNameMixin):
     def __init__(
         self,
         model: torch.nn.Module,
+        evaluator_cfg: dict = None,
         loss_weights=None,
         predict_tasks=None,
         predict_path=None,
@@ -21,7 +24,10 @@ class LightningModule(_LightningModule, ABC):
         super().__init__(*args, **kwargs)
 
         self.model = model
+        self.evaluators = torch.nn.ModuleDict()
         self.loss_weights = loss_weights
+
+        self.evaluator_cfg = get_split_config(evaluator_cfg)
 
         if predict_tasks is None:
             predict_tasks = []
@@ -37,6 +43,20 @@ class LightningModule(_LightningModule, ABC):
         self.lr = None
         self.automatic_lr_schedule = True
         self.manual_step_scedulers = []
+
+    def _build_evaluator(self, split):
+        if split in self.evaluator_cfg and self.evaluator_cfg[split]:
+            self.evaluators[split] = recursive_instantate_class(
+                self.evaluator_cfg[split]
+            )
+        else:
+            self.evaluators[split] = None
+
+    def setup(self, stage=None):
+        super().setup(stage=stage)
+
+        for name in self.split_names:
+            self._build_evaluator(name)
 
     def optimizer_step(self, *args, **kwargs) -> None:
         # update params
@@ -75,21 +95,51 @@ class LightningModule(_LightningModule, ABC):
             }
         # calculate loss
         if "loss" not in loss:
-            loss["loss"] = torch.sum(torch.stack(list(loss.values())))
+            loss["loss"] = torch.sum(
+                torch.stack([v for k, v in loss.items() if "loss" in k])
+            )
         return loss
 
-    def forward_step(self, batch, *args, split="val", **kwargs):
-        loss_dict = self.loss_step(batch, self(batch))
-        self.log_dict(self.flatten_dict(loss_dict, split), sync_dist=True)
-        return loss_dict
+    def metric_step(self, batch, output, *args, split="val", **kwargs):
+        if self.evaluators[split]:
+            return self.evaluators[split].update(batch, output)
+        else:
+            return {}
 
-    def on_forward_epoch_end(self, *args, **kwargs):
-        pass
+    def on_metric_epoch_end(self, *args, split="val", **kwargs):
+        if self.evaluators[split]:
+            return self.evaluators[split].compute()
+        else:
+            return {}
 
-    def training_step(self, batch, *args, **kwargs):
-        loss_dict = self.loss_step(batch, self(batch))
-        self.log_dict(self.flatten_dict(loss_dict))
-        return loss_dict
+    def forward_step(self, batch, *args, split, **kwargs):
+        # forward
+        output = self(batch, *args, **kwargs)
+
+        # loss
+        log_dict = self.loss_step(batch, output, *args, **kwargs)
+
+        # metrics
+        metrics = self.metric_step(batch, output, split=split, *args, **kwargs)
+        log_dict.update(metrics)
+
+        # log
+        self.log_dict(self.flatten_dict(log_dict, split), sync_dist=split != "train")
+
+        # return loss
+        return log_dict
+
+    def on_forward_epoch_end(self, split, *args, **kwargs):
+        metrics = self.on_metric_epoch_end(split=split, *args, **kwargs)
+
+        if metrics:
+            self.log_dict(self.flatten_dict(metrics, split), sync_dist=split != "train")
+
+    def training_step(self, *args, **kwargs):
+        return self.forward_step(split="train", *args, **kwargs)
+
+    def on_training_epoch_end(self, *args, **kwargs):
+        return self.on_forward_epoch_end(split="train", *args, **kwargs)
 
     def validation_step(self, *args, **kwargs):
         return self.forward_step(split="val", *args, **kwargs)
