@@ -7,7 +7,7 @@ with open("README.md", "r") as f:
 
 setup(
     name="lightning-template",
-    version="1.1.5",
+    version="1.1.6",
     description="A template wrapper for pytorch-lightning.",
     long_description=long_description,
     long_description_content_type="text/markdown",

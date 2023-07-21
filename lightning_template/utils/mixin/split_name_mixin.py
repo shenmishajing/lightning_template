@@ -66,6 +66,8 @@ class SplitNameMixin:
                     if not isinstance(config["split_format_to"], List):
                         config["split_format_to"] = [config["split_format_to"]]
 
+                    if "split_name_map" not in config:
+                        config["split_name_map"] = {}
                     for k, v in self.SplitNameMap.items():
                         config["split_name_map"].setdefault(k, v)
 
