@@ -145,7 +145,7 @@ class LightningModule(SplitNameMixin, _LightningModule):
     def training_step(self, *args, **kwargs):
         return self.forward_step(split=self.TrainSplit, *args, **kwargs)
 
-    def on_training_epoch_end(self, *args, **kwargs):
+    def on_train_epoch_end(self, *args, **kwargs):
         return self.on_forward_epoch_end(split=self.TrainSplit, *args, **kwargs)
 
     def validation_step(self, *args, **kwargs):
