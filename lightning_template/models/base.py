@@ -142,9 +142,7 @@ class LightningModule(SplitNameMixin, _LightningModule):
         log_dict = self.on_metric_epoch_end(split=split, *args, **kwargs)
 
         if log_dict:
-            self.log_dict(
-                self.flatten_dict(log_dict, split), sync_dist=split != self.TrainSplit
-            )
+            self.log_dict(self.flatten_dict(log_dict, split), sync_dist=True)
 
     def training_step(self, *args, **kwargs):
         return self.forward_step(split=self.TrainSplit, *args, **kwargs)
