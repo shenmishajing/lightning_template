@@ -42,3 +42,7 @@ You can get some examples from [project_template](https://github.com/shenmishaji
 ### Speed Benchmark
 
 See [speed benchmark lib](https://github.com/shenmishajing/speed_benchmark)
+
+### Shell Command Launcher
+
+See [doc](docs/tools/shell_cmd_launcher.md)
