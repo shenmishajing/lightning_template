@@ -71,9 +71,9 @@ class LightningCLI(_LightningCLI):
                 f"sys.argv[1:]={sys.argv[1:]}, args={args}."
             )
         if isinstance(args, (dict, Namespace)):
-            self.config = parser.parse_object(args, defaults=False)
+            self.config = parser.parse_object(args)
         else:
-            self.config = parser.parse_args(args, defaults=False)
+            self.config = parser.parse_args(args)
 
     def before_instantiate_classes(self) -> None:
         """Implement to run some code before instantiating the classes."""
