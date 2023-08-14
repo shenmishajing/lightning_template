@@ -39,11 +39,8 @@ class LightningDataModule(SplitNameMixin, _LightningDataModule):
         else:
             return None
 
-    def _build_sampler(self, dataloader_cfg, dataset):
-        if "shuffle" in dataloader_cfg:
-            shuffle = dataloader_cfg.pop("shuffle")
-        else:
-            shuffle = False
+    def _build_sampler(self, dataloader_cfg, dataset, split):
+        shuffle = dataloader_cfg.pop("shuffle", split == self.TrainSplit)
 
         if shuffle:
             sampler = RandomSampler(dataset)
@@ -54,7 +51,7 @@ class LightningDataModule(SplitNameMixin, _LightningDataModule):
     def _build_batch_sampler(self, batch_sampler_cfg, dataset, *args):
         return instantiate_class(args, batch_sampler_cfg)
 
-    def _handle_batch_sampler(self, dataloader_cfg, dataset, *arg, **kwargs):
+    def _handle_dataloader_config(self, dataloader_cfg, dataset, split, *arg, **kwargs):
         if "batch_sampler" in dataloader_cfg:
             if "init_args" not in dataloader_cfg["batch_sampler"]:
                 dataloader_cfg["batch_sampler"]["init_args"] = {}
@@ -67,11 +64,14 @@ class LightningDataModule(SplitNameMixin, _LightningDataModule):
             ] = dataloader_cfg.pop("drop_last", False)
             dataloader_cfg["batch_sampler"]["init_args"][
                 "sampler"
-            ] = self._build_sampler(dataloader_cfg, dataset)
+            ] = self._build_sampler(dataloader_cfg, dataset, split)
 
             dataloader_cfg["batch_sampler"] = self._build_batch_sampler(
                 dataloader_cfg["batch_sampler"], dataset
             )
+        elif "sampler" not in dataloader_cfg:
+            dataloader_cfg.setdefault("shuffle", split == self.TrainSplit)
+
         return dataloader_cfg
 
     def _build_dataloader(self, dataset, split, set_batch_size=False):
@@ -82,7 +82,8 @@ class LightningDataModule(SplitNameMixin, _LightningDataModule):
             dataloader_cfg.get("collate_fn", {}), dataset
         )
         return DataLoader(
-            dataset, **self._handle_batch_sampler(dataloader_cfg, dataset, split=split)
+            dataset,
+            **self._handle_dataloader_config(dataloader_cfg, dataset, split=split)
         )
 
     def _dataloader(self, split, **kwargs):
