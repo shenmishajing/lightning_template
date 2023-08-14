@@ -5,7 +5,16 @@ from lightning.pytorch.core.datamodule import (
     LightningDataModule as _LightningDataModule,
 )
 from sklearn.model_selection import KFold
-from torch.utils.data import DataLoader, RandomSampler, SequentialSampler, Subset
+from torch.utils.data import (
+    DataLoader,
+    IterableDataset,
+    IterDataPipe,
+    RandomSampler,
+    SequentialSampler,
+    Subset,
+)
+from torch.utils.data.dataloader import _InfiniteConstantSampler
+from torch.utils.data.graph_settings import apply_shuffle_settings
 
 from lightning_template.utils.cli import recursive_instantate_class
 from lightning_template.utils.mixin import SplitNameMixin
@@ -40,13 +49,16 @@ class LightningDataModule(SplitNameMixin, _LightningDataModule):
             return None
 
     def _build_sampler(self, dataloader_cfg, dataset, split):
-        shuffle = dataloader_cfg.pop("shuffle", split == self.TrainSplit)
-
-        if shuffle:
-            sampler = RandomSampler(dataset)
+        if isinstance(dataset, IterableDataset):
+            shuffle = dataloader_cfg.pop("shuffle", None)
+            if isinstance(dataset, IterDataPipe) and shuffle is not None:
+                dataset = apply_shuffle_settings(dataset, shuffle=shuffle)
+            return _InfiniteConstantSampler()
         else:
-            sampler = SequentialSampler(dataset)
-        return sampler
+            if dataloader_cfg.pop("shuffle", split == self.TrainSplit):
+                return RandomSampler(dataset)
+            else:
+                return SequentialSampler(dataset)
 
     def _build_batch_sampler(self, batch_sampler_cfg, dataset, *args):
         return instantiate_class(args, batch_sampler_cfg)
@@ -69,7 +81,9 @@ class LightningDataModule(SplitNameMixin, _LightningDataModule):
             dataloader_cfg["batch_sampler"] = self._build_batch_sampler(
                 dataloader_cfg["batch_sampler"], dataset
             )
-        elif "sampler" not in dataloader_cfg:
+        elif "sampler" not in dataloader_cfg and not isinstance(
+            dataset, IterableDataset
+        ):
             dataloader_cfg.setdefault("shuffle", split == self.TrainSplit)
 
         return dataloader_cfg
