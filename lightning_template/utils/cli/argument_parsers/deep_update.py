@@ -25,6 +25,10 @@ def deep_update(source, override):
                 source[key] = override[key]
         return source
     elif isinstance(source, List) and isinstance(override, Dict):
+        keywords = ["__delete__", "change_item", "insert_item", "pre_item", "post_item"]
+        if not any([k in override for k in keywords]):
+            return override
+
         if "__delete__" in override and override["__delete__"] is True:
             override.pop("__delete__")
             source = []
