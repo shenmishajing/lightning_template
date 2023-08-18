@@ -24,7 +24,7 @@ class LightningModule(SplitNameMixin, _LightningModule):
         super().__init__(*args, **kwargs)
 
         self.model = model
-        self.evaluators = torch.nn.ModuleDict()
+        self.evaluators = {}
         self.loss_weights = loss_weights
 
         self.evaluator_cfg = self.get_split_config(evaluator_cfg)
@@ -44,6 +44,17 @@ class LightningModule(SplitNameMixin, _LightningModule):
         self.automatic_lr_schedule = True
         self.manual_step_scedulers = []
 
+    def recursive_build_modules(self, module):
+        if isinstance(module, list):
+            module = [self.recursive_build_modules(m) for m in module]
+            if all([isinstance(m, torch.nn.Module) for m in module]):
+                return torch.nn.ModuleList(module)
+        if isinstance(module, dict):
+            module = {k: self.recursive_build_modules(m) for k, m in module.items()}
+            if all([isinstance(m, torch.nn.Module) for m in module.values()]):
+                return torch.nn.ModuleDict(module)
+        return module
+
     def _build_evaluator(self, split):
         if split in self.evaluator_cfg and self.evaluator_cfg[split]:
             self.evaluators[split] = recursive_instantate_class(
@@ -57,6 +68,7 @@ class LightningModule(SplitNameMixin, _LightningModule):
 
         for name in self.split_names:
             self._build_evaluator(name)
+        self.evaluators = self.recursive_build_modules(self.evaluators)
 
     def optimizer_step(self, *args, **kwargs) -> None:
         # update params
@@ -82,7 +94,7 @@ class LightningModule(SplitNameMixin, _LightningModule):
     def forward(self, batch, *args, **kwargs):
         return self.model(batch)
 
-    def _loss_step(self, batch, output, *args, **kwargs):
+    def _loss_step(self, batch, *args, output, **kwargs):
         if not isinstance(output, Mapping):
             return {"loss": output}
         elif "loss_dict" in output:
@@ -109,7 +121,7 @@ class LightningModule(SplitNameMixin, _LightningModule):
     def update_evaluator(self, evaluator, *args, **kwargs):
         evaluator.update(*args, **kwargs)
 
-    def _metric_step(self, batch, output, *args, **kwargs):
+    def _metric_step(self, batch, *args, output, **kwargs):
         if isinstance(output, Mapping) and "metric_dict" in output:
             return output["metric_dict"]
         elif hasattr(self.model, "metric_step"):
@@ -121,7 +133,9 @@ class LightningModule(SplitNameMixin, _LightningModule):
             metrics = self._metric_step(
                 dataloader_idx=dataloader_idx, split=split, *args, **kwargs
             )
-            if dataloader_idx is not None and isinstance(self.evaluators[split], list):
+            if dataloader_idx is not None and isinstance(
+                self.evaluators[split], (list, torch.nn.ModuleList)
+            ):
                 self.update_evaluator(self.evaluators[split][dataloader_idx], **metrics)
             else:
                 self.update_evaluator(self.evaluators[split], **metrics)
@@ -138,12 +152,12 @@ class LightningModule(SplitNameMixin, _LightningModule):
             evaluator, dataloader_idx=dataloader_idx, *args, **kwargs
         )
         if dataloader_idx is not None:
-            result = {f"{dataloader_idx}/{k}": v for k, v in result.items()}
+            result = {f"{k}_{dataloader_idx}": v for k, v in result.items()}
         return result
 
     def on_metric_epoch_end(self, *args, split, **kwargs):
         if self.evaluators[split]:
-            if isinstance(self.evaluators[split], list):
+            if isinstance(self.evaluators[split], (list, torch.nn.ModuleList)):
                 result = {}
                 for dataloader_idx, evaluator in enumerate(self.evaluators[split]):
                     result.update(
