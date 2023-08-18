@@ -44,6 +44,31 @@ class SplitNameMixin:
         super().setup(stage=stage)
         self.split_names = self._get_split_names(stage)
 
+    @staticmethod
+    def substitute_split_name(
+        cur_cfg,
+        split_prefix,
+        split_attr,
+        split_attr_split_str,
+        split_name_map,
+        split_name,
+        *args,
+        **kwargs
+    ):
+        if split_prefix is not None:
+            for s in split_prefix.split(split_attr_split_str):
+                if s not in cur_cfg:
+                    cur_cfg[s] = {}
+                cur_cfg = cur_cfg[s]
+
+        split_attr = split_attr.split(split_attr_split_str)
+        for s in split_attr[:-1]:
+            cur_cfg = cur_cfg[s]
+        split_attr = split_attr[-1]
+        cur_cfg[split_attr] = string.Template(
+            cur_cfg.get(split_attr, "$split")
+        ).safe_substitute(split=split_name_map[split_name])
+
     def get_split_config(self, config):
         if isinstance(config, Mapping):
             if all([config.get(name) is None for name in self.split_names]):
@@ -76,24 +101,21 @@ class SplitNameMixin:
 
                     for name in self.split_names:
                         for split_attr in config["split_format_to"]:
-                            cur_cfg = res[name]
-                            if config["split_prefix"] is not None:
-                                for s in config["split_prefix"].split(
-                                    config["split_attr_split_str"]
-                                ):
-                                    if s not in cur_cfg:
-                                        cur_cfg[s] = {}
-                                    cur_cfg = cur_cfg[s]
-
-                            split_attr = split_attr.split(
-                                config["split_attr_split_str"]
-                            )
-                            for s in split_attr[:-1]:
-                                cur_cfg = cur_cfg[s]
-                            split_attr = split_attr[-1]
-                            cur_cfg[split_attr] = string.Template(
-                                cur_cfg.get(split_attr, "$split")
-                            ).safe_substitute(split=config["split_name_map"][name])
+                            if isinstance(res[name], list):
+                                for cur_cfg in res[name]:
+                                    self.substitute_split_name(
+                                        cur_cfg,
+                                        split_attr=split_attr,
+                                        split_name=name,
+                                        **config
+                                    )
+                            else:
+                                self.substitute_split_name(
+                                    res[name],
+                                    split_attr=split_attr,
+                                    split_name=name,
+                                    **config
+                                )
                 return res
         else:
             return {
