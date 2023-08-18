@@ -106,27 +106,73 @@ class LightningModule(SplitNameMixin, _LightningModule):
             )
         return loss
 
-    def metric_step(self, batch, output, *args, split, **kwargs):
+    def update_evaluator(self, evaluator, *args, **kwargs):
+        evaluator.update(*args, **kwargs)
+
+    def _metric_step(self, batch, output, *args, **kwargs):
+        if isinstance(output, Mapping) and "metric_dict" in output:
+            return output["metric_dict"]
+        elif hasattr(self.model, "metric_step"):
+            return self.model.metric_step(batch, output)
+        return output
+
+    def metric_step(self, *args, dataloader_idx=None, split, **kwargs):
         if self.evaluators[split]:
-            self.evaluators[split].update(output["pred"], output["target"])
+            metrics = self._metric_step(
+                dataloader_idx=dataloader_idx, split=split, *args, **kwargs
+            )
+            if dataloader_idx is not None and isinstance(self.evaluators[split], list):
+                self.update_evaluator(self.evaluators[split][dataloader_idx], **metrics)
+            else:
+                self.update_evaluator(self.evaluators[split], **metrics)
+
+    def _compute_evaluator(self, evaluator, *args, **kwargs):
+        result = evaluator.compute()
+        evaluator.reset()
+        if not isinstance(result, dict):
+            result = {evaluator.__class__.__name__: result}
+        return result
+
+    def compute_evaluator(self, evaluator, dataloader_idx=None, *args, **kwargs):
+        result = self._compute_evaluator(
+            evaluator, dataloader_idx=dataloader_idx, *args, **kwargs
+        )
+        if dataloader_idx is not None:
+            result = {f"{dataloader_idx}/{k}": v for k, v in result.items()}
+        return result
 
     def on_metric_epoch_end(self, *args, split, **kwargs):
         if self.evaluators[split]:
-            result = self.evaluators[split].compute()
-            self.evaluators[split].reset()
-            if not isinstance(result, dict):
-                result = {self.evaluators[split].__class__.__name__: result}
+            if isinstance(self.evaluators[split], list):
+                result = {}
+                for dataloader_idx, evaluator in enumerate(self.evaluators[split]):
+                    result.update(
+                        self.compute_evaluator(
+                            evaluator,
+                            dataloader_idx=dataloader_idx,
+                            split=split,
+                            *args,
+                            **kwargs,
+                        )
+                    )
+            else:
+                result = self.compute_evaluator(
+                    self.evaluators[split],
+                    split=split,
+                    *args,
+                    **kwargs,
+                )
             return result
 
-    def forward_step(self, batch, *args, split, **kwargs):
+    def forward_step(self, *args, split, **kwargs):
         # forward
-        output = self(batch, *args, split=split, **kwargs)
+        output = self(*args, split=split, **kwargs)
 
         # loss
-        log_dict = self.loss_step(batch, output, *args, split=split, **kwargs)
+        log_dict = self.loss_step(output=output, *args, split=split, **kwargs)
 
         # metrics
-        metrics = self.metric_step(batch, output, split=split, *args, **kwargs)
+        metrics = self.metric_step(output=output, split=split, *args, **kwargs)
         if metrics:
             log_dict.update(metrics)
 
@@ -144,20 +190,41 @@ class LightningModule(SplitNameMixin, _LightningModule):
         if log_dict:
             self.log_dict(self.flatten_dict(log_dict, split), sync_dist=True)
 
-    def training_step(self, *args, **kwargs):
-        return self.forward_step(split=self.TrainSplit, *args, **kwargs)
+    def training_step(self, batch, batch_idx, dataloader_idx=None, *args, **kwargs):
+        return self.forward_step(
+            batch,
+            batch_idx,
+            dataloader_idx=dataloader_idx,
+            split=self.TrainSplit,
+            *args,
+            **kwargs,
+        )
 
     def on_train_epoch_end(self, *args, **kwargs):
         return self.on_forward_epoch_end(split=self.TrainSplit, *args, **kwargs)
 
-    def validation_step(self, *args, **kwargs):
-        return self.forward_step(split=self.ValidateSplit, *args, **kwargs)
+    def validation_step(self, batch, batch_idx, dataloader_idx=None, *args, **kwargs):
+        return self.forward_step(
+            batch,
+            batch_idx,
+            dataloader_idx=dataloader_idx,
+            split=self.ValidateSplit,
+            *args,
+            **kwargs,
+        )
 
     def on_validation_epoch_end(self, *args, **kwargs):
         return self.on_forward_epoch_end(split=self.ValidateSplit, *args, **kwargs)
 
-    def test_step(self, *args, **kwargs):
-        return self.forward_step(split=self.TestSplit, *args, **kwargs)
+    def test_step(self, batch, batch_idx, dataloader_idx=None, *args, **kwargs):
+        return self.forward_step(
+            batch,
+            batch_idx,
+            dataloader_idx=dataloader_idx,
+            split=self.TestSplit,
+            *args,
+            **kwargs,
+        )
 
     def on_test_epoch_end(self, *args, **kwargs):
         return self.on_forward_epoch_end(split=self.TestSplit, *args, **kwargs)
