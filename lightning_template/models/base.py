@@ -85,8 +85,8 @@ class LightningModule(SplitNameMixin, _LightningModule):
     def _loss_step(self, batch, output, *args, **kwargs):
         if not isinstance(output, Mapping):
             return {"loss": output}
-        elif "log_dict" in output:
-            return output["log_dict"]
+        elif "loss_dict" in output:
+            return output["loss_dict"]
         elif hasattr(self.model, "loss_step"):
             return self.model.loss_step(batch, output)
         return output
