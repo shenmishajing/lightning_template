@@ -57,7 +57,7 @@ def single_cmd_launcher(
 
         tasks.append(t)
 
-        if tasks.full():
+        if len(tasks)==tasks.maxlen:
             tasks.popleft().wait()
 
         if sleep_time:
