@@ -22,9 +22,13 @@ The dir to save the log file. If set, the output of each command will be saved i
 
 The number of times to run the same command. If set, each command will run `num` times. If `log_dir` is also set, the output of each command will be saved in `log_dir/<var_name1>_<var_value1>__<var_name2>_<var_value2>...__<var_namen>_<var_valuen>_<num>.log`.
 
+#### parallel_num
+
+The number of tasks to run in parallel. If set, we will run `parallel_num` tasks in parallel.
+
 #### sleep_time
 
-The sleep time between each command can be `None` or `int`, `None` by default. If set to `None`, all commands will be executed serially. If set to `int`, we will sleep `sleep_time` seconds between each command, and all commands will be executed in parallel.
+The sleep time in seconds between each command, `0` by default. We will sleep `sleep_time` seconds between each command.
 
 #### other args
 

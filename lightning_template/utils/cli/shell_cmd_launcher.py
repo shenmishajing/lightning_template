@@ -1,6 +1,7 @@
 import os
 import subprocess
 import time
+from collections import deque
 from string import Template
 
 
@@ -26,10 +27,11 @@ def single_cmd_launcher(
     log_dir: str = None,
     name: str = "",
     num: int = 1,
-    sleep_time: int = None,
+    parallel_num: int = 1,
+    sleep_time: float = 0,
     **kwargs,
 ):
-    tasks = []
+    tasks = deque(parallel_num)
     for num_ind in range(num):
         print(f"running cmd: {cmd}, num: {num_ind}")
 
@@ -43,7 +45,7 @@ def single_cmd_launcher(
 
         if log_dir is not None:
             stdout = open(os.path.join(log_dir, f"{cur_name}.log"), "w")
-        elif sleep_time is not None:
+        elif parallel_num == 1:
             stdout = subprocess.PIPE
         else:
             stdout = None
@@ -52,13 +54,15 @@ def single_cmd_launcher(
             cmd, **kwargs, stdout=stdout, stderr=subprocess.STDOUT, shell=True
         )
 
-        if sleep_time is None:
-            t.wait()
-        else:
-            tasks.append(t)
+        if tasks.full():
+            tasks.popleft().wait()
+
+        tasks.append(t)
+
+        if sleep_time:
             time.sleep(sleep_time)
 
-    return tasks
+    return list(tasks)
 
 
 def shell_cmd_launcher(
