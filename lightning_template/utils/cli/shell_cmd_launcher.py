@@ -31,6 +31,7 @@ def single_cmd_launcher(
     sleep_time: float = 0,
     **kwargs,
 ):
+    parallel_num = max(1, parallel_num)
     tasks = deque(parallel_num)
     for num_ind in range(num):
         print(f"running cmd: {cmd}, num: {num_ind}")
@@ -54,10 +55,10 @@ def single_cmd_launcher(
             cmd, **kwargs, stdout=stdout, stderr=subprocess.STDOUT, shell=True
         )
 
+        tasks.append(t)
+
         if tasks.full():
             tasks.popleft().wait()
-
-        tasks.append(t)
 
         if sleep_time:
             time.sleep(sleep_time)
