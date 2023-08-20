@@ -46,7 +46,7 @@ def single_cmd_launcher(
 
         if log_dir is not None:
             stdout = open(os.path.join(log_dir, f"{cur_name}.log"), "w")
-        elif parallel_num == 1:
+        elif parallel_num > 1:
             stdout = subprocess.PIPE
         else:
             stdout = None
@@ -57,7 +57,7 @@ def single_cmd_launcher(
 
         tasks.append(t)
 
-        if len(tasks)==tasks.maxlen:
+        if len(tasks) == tasks.maxlen:
             tasks.popleft().wait()
 
         if sleep_time:
