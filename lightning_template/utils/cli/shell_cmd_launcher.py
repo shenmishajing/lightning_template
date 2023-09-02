@@ -3,6 +3,7 @@ import subprocess
 import time
 from collections import deque
 from string import Template
+from typing import Union
 
 
 def iter_arg_dict(arg_dict, keys=None, cur_arg_dict=None):
@@ -68,7 +69,7 @@ def single_cmd_launcher(
 
 def shell_cmd_launcher(
     cmd: str,
-    arg_dict: dict[str, list] = None,
+    arg_dict: dict[str, Union[list, str]] = None,
     log_dir: str = None,
     num: int = 1,
     **kwargs,
@@ -86,6 +87,10 @@ def shell_cmd_launcher(
 
     tasks = []
     if arg_dict is not None:
+        for arg in arg_dict:
+            if isinstance(arg_dict[arg], str):
+                arg_dict[arg] = arg_dict[arg].split(",")
+
         for args in iter_arg_dict(arg_dict):
             cur_cmd = Template(cmd).substitute(args)
             keys = sorted(args.keys())
