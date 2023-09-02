@@ -35,7 +35,7 @@ def single_cmd_launcher(
     parallel_num = max(1, parallel_num)
     tasks = deque(maxlen=parallel_num)
     for num_ind in range(num):
-        print(f"running cmd: {cmd}, num: {num_ind}")
+        print(f"running cmd: {cmd}, num: {num_ind+1}/{num}")
 
         if num > 1:
             if name == "":
