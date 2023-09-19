@@ -1,6 +1,6 @@
 import os
 import shutil
-from typing import Mapping
+from typing import List, Mapping, Optional, Union
 
 import torch
 from lightning.pytorch import LightningModule as _LightningModule
@@ -14,6 +14,7 @@ class LightningModule(SplitNameMixin, _LightningModule):
     def __init__(
         self,
         model: torch.nn.Module,
+        ckpt_path: Optional[Union[str, List[str]]] = None,
         evaluator_cfg: dict = None,
         loss_weights=None,
         predict_tasks=None,
@@ -24,6 +25,9 @@ class LightningModule(SplitNameMixin, _LightningModule):
         super().__init__(*args, **kwargs)
 
         self.model = model
+        if isinstance(ckpt_path, str):
+            ckpt_path = [ckpt_path]
+        self.ckpt_path = ckpt_path
         self.evaluators = {}
         self.loss_weights = loss_weights
 
@@ -43,6 +47,12 @@ class LightningModule(SplitNameMixin, _LightningModule):
         self.lr = None
         self.automatic_lr_schedule = True
         self.manual_step_scedulers = []
+
+        if ckpt_path is not None:
+            for p in ckpt_path:
+                checkpoint = torch.load(p, map_location="cpu")
+                self.on_load_checkpoint(checkpoint)
+                self.load_state_dict(checkpoint["state_dict"], strict=False)
 
     def recursive_build_modules(self, module):
         if isinstance(module, list):
