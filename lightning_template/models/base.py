@@ -50,9 +50,10 @@ class LightningModule(SplitNameMixin, _LightningModule):
 
         if ckpt_path is not None:
             for p in ckpt_path:
-                checkpoint = torch.load(p, map_location="cpu")
-                self.on_load_checkpoint(checkpoint)
-                self.load_state_dict(checkpoint["state_dict"], strict=False)
+                if os.path.exists(p):
+                    checkpoint = torch.load(p, map_location="cpu")
+                    self.on_load_checkpoint(checkpoint)
+                    self.load_state_dict(checkpoint["state_dict"], strict=False)
 
     def recursive_build_modules(self, module):
         if isinstance(module, list):
