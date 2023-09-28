@@ -20,10 +20,10 @@ class SetWandbLoggerCallback(Callback):
             default_log_code_cfg = {
                 "name": "code",
                 "include_fn": [
-                    re.Pattern(p) for p in [".py", ".yaml", ".yml", ".sh", ".md"]
+                    re.compile(p) for p in [".py", ".yaml", ".yml", ".sh", ".md"]
                 ],
                 "exclude_fn": [
-                    re.Pattern(p) for p in ["data/", "work_dirs/", "wandb/"]
+                    re.compile(p) for p in ["data/", "work_dirs/", "wandb/"]
                 ],
             }
             for key, value in default_log_code_cfg.items():
