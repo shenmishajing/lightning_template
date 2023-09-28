@@ -1,4 +1,5 @@
 import re
+from functools import partial
 from typing import Optional, Union
 
 from lightning.pytorch import Callback, LightningModule, Trainer
@@ -30,8 +31,11 @@ class SetWandbLoggerCallback(Callback):
                 self.log_code_cfg.setdefault(key, value)
             for name in ["include_fn", "exclude_fn"]:
                 if name in self.log_code_cfg:
-                    self.log_code_cfg[name] = lambda path: any(
-                        p.match(path) is not None for p in self.log_code_cfg[name]
+                    self.log_code_cfg[name] = partial(
+                        lambda path, pattens: any(
+                            p.match(path) is not None for p in pattens
+                        ),
+                        pattens=self.log_code_cfg[name],
                     )
 
     def setup(
