@@ -31,11 +31,12 @@ class SetWandbLoggerCallback(Callback):
                 self.log_code_cfg.setdefault(key, value)
             for name in ["include_fn", "exclude_fn"]:
                 if name in self.log_code_cfg:
+
+                    def _is_match(path, root=None, patterns=None):
+                        return any(p.match(path) is not None for p in patterns)
+
                     self.log_code_cfg[name] = partial(
-                        lambda path, pattens: any(
-                            p.match(path) is not None for p in pattens
-                        ),
-                        pattens=self.log_code_cfg[name],
+                        _is_match, patterns=self.log_code_cfg[name]
                     )
 
     def setup(
