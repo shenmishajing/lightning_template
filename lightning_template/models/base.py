@@ -13,7 +13,7 @@ from lightning_template.utils.mixin import SplitNameMixin
 class LightningModule(SplitNameMixin, _LightningModule):
     def __init__(
         self,
-        model: torch.nn.Module,
+        model: Optional[torch.nn.Module] = None,
         ckpt_path: Optional[Union[str, List[str]]] = None,
         evaluator_cfg: dict = None,
         loss_weights=None,
@@ -110,7 +110,7 @@ class LightningModule(SplitNameMixin, _LightningModule):
             return {"loss": output}
         elif "loss_dict" in output:
             return output["loss_dict"]
-        elif hasattr(self.model, "loss_step"):
+        elif self.model is not None and hasattr(self.model, "loss_step"):
             return self.model.loss_step(batch, output)
         return output
 
@@ -135,7 +135,7 @@ class LightningModule(SplitNameMixin, _LightningModule):
     def _metric_step(self, batch, *args, output, **kwargs):
         if isinstance(output, Mapping) and "metric_dict" in output:
             return output["metric_dict"]
-        elif hasattr(self.model, "metric_step"):
+        elif self.model is not None and hasattr(self.model, "metric_step"):
             return self.model.metric_step(batch, output)
         return output
 
