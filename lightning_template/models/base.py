@@ -203,7 +203,9 @@ class LightningModule(SplitNameMixin, _LightningModule):
 
         # log
         self.log_dict(
-            self.flatten_dict(log_dict, split), sync_dist=split != self.TrainSplit
+            self.flatten_dict(log_dict, split),
+            batch_size=output.get("batch_size", None),
+            sync_dist=split != self.TrainSplit,
         )
 
         # return loss
@@ -213,7 +215,12 @@ class LightningModule(SplitNameMixin, _LightningModule):
         log_dict = self.on_metric_epoch_end(split=split, *args, **kwargs)
 
         if log_dict:
-            self.log_dict(self.flatten_dict(log_dict, split), sync_dist=True)
+            batch_size = log_dict.pop("batch_size", None)
+            self.log_dict(
+                self.flatten_dict(log_dict, split),
+                batch_size=batch_size,
+                sync_dist=True,
+            )
 
     def training_step(self, batch, batch_idx, dataloader_idx=None, *args, **kwargs):
         return self.forward_step(
