@@ -101,6 +101,14 @@ class LightningCLI(_LightningCLI):
                 if config["trainer"]["logger"]["init_args"].get(k) is None:
                     config["trainer"]["logger"]["init_args"][k] = v
 
+            if (
+                "subcommand" in self.config
+                and self.config["subcommand"] != "fit"
+                and "Wandb" in config["trainer"]["logger"]["class_path"]
+                and config["trainer"]["logger"]["init_args"].get("mode") is None
+            ):
+                config["trainer"]["logger"]["init_args"]["mode"] = "disabled"
+
     def _add_configure_optimizers_method_to_model(self, *args, **kwargs) -> None:
         super()._add_configure_optimizers_method_to_model(*args, **kwargs)
         optimizer_config = self._get(self.config_init, "optimizer_config")
