@@ -16,6 +16,7 @@ class LightningModule(SplitNameMixin, _LightningModule):
         model: Optional[torch.nn.Module] = None,
         ckpt_path: Optional[Union[str, List[str]]] = None,
         evaluator_cfg: dict = None,
+        evaluator_as_submodule: bool = True,
         loss_weights=None,
         predict_tasks=None,
         predict_path=None,
@@ -32,6 +33,7 @@ class LightningModule(SplitNameMixin, _LightningModule):
         self.loss_weights = loss_weights
 
         self.evaluator_cfg = self.get_split_config(evaluator_cfg)
+        self.evaluate_as_submodule = evaluator_as_submodule
 
         if predict_tasks is None:
             predict_tasks = []
@@ -55,16 +57,17 @@ class LightningModule(SplitNameMixin, _LightningModule):
                     self.on_load_checkpoint(checkpoint)
                     self.load_state_dict(checkpoint["state_dict"], strict=False)
 
-    def recursive_build_modules(self, module):
-        if isinstance(module, list):
-            module = [self.recursive_build_modules(m) for m in module]
-            if all([isinstance(m, torch.nn.Module) for m in module]):
-                return torch.nn.ModuleList(module)
-        if isinstance(module, dict):
-            module = {k: self.recursive_build_modules(m) for k, m in module.items()}
-            if all([isinstance(m, torch.nn.Module) for m in module.values()]):
-                return torch.nn.ModuleDict(module)
-        return module
+    def recursive_parse_modules(self, module):
+        modules = []
+        if isinstance(module, torch.nn.Module):
+            modules.append(module)
+        elif isinstance(module, list):
+            for m in module:
+                modules.extend(self.recursive_parse_modules(m))
+        elif isinstance(module, dict):
+            for m in module.values():
+                modules.extend(self.recursive_parse_modules(m))
+        return modules
 
     def _build_evaluator(self, split):
         if split in self.evaluator_cfg and self.evaluator_cfg[split]:
@@ -79,7 +82,10 @@ class LightningModule(SplitNameMixin, _LightningModule):
 
         for name in self.split_names:
             self._build_evaluator(name)
-        self.evaluators = self.recursive_build_modules(self.evaluators)
+        if self.evaluate_as_submodule:
+            self._evaluators = torch.nn.ModuleList(
+                self.recursive_parse_modules(self.evaluators)
+            )
 
     def optimizer_step(self, *args, **kwargs) -> None:
         # update params
