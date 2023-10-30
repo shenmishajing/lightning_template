@@ -1,6 +1,6 @@
 from typing import Optional
 
-from lightning.pytorch import Callback, LightningModule, Trainer
+from lightning.pytorch import Callback
 from lightning.pytorch.utilities import rank_zero_warn
 from torch.multiprocessing import get_all_sharing_strategies, set_sharing_strategy
 
@@ -14,9 +14,6 @@ class SetSharingStrategyCallback(Callback):
     ):
         self.strategy = strategy
 
-    def setup(
-        self, trainer: Trainer, pl_module: LightningModule, stage: Optional[str] = None
-    ) -> None:
         all_strategies = get_all_sharing_strategies()
         if self.strategy in all_strategies:
             set_sharing_strategy(self.strategy)

@@ -20,7 +20,6 @@ class CustomReprCallback(Callback):
             classes = ["torch.Tensor"]
         self.classes = classes
 
-    def setup(self, *args, **kwargs) -> None:
         for class_path in self.classes:
             class_module, class_name = class_path.rsplit(".", 1)
             module = __import__(class_module, fromlist=[class_name])

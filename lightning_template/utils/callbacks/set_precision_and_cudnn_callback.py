@@ -25,7 +25,6 @@ class SetPrecisionAndCudnnCallback(Callback):
         self.deterministic_debug_mode = deterministic_debug_mode
         self.cudnn_enabled = cudnn_enabled
 
-    def setup(self, *args, **kwargs) -> None:
         if self.float32_matmul_precision is not None:
             torch.set_float32_matmul_precision(self.float32_matmul_precision)
 
