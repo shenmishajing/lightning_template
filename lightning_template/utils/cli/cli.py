@@ -84,7 +84,7 @@ class LightningCLI(_LightningCLI):
             else self.config[self.config["subcommand"]]
         )
         name = os.path.splitext(os.path.split(config["config"][0].abs_path)[1])[0]
-        version = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S.%f")
+        version = datetime.datetime.now().strftime("%Y.%m.%d_%H.%M.%S.%f")
         if (
             config.get("trainer") is not None
             and config["trainer"].get("logger") is not None
