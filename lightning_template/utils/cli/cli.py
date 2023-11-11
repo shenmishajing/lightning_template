@@ -39,9 +39,9 @@ class LightningCLI(_LightningCLI):
     def _setup_parser_kwargs(
         self, *args, **kwargs
     ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
-        parser_kwargs = {"parser_mode": "yaml_with_merge"}
         main_kwargs, subparser_kwargs = super()._setup_parser_kwargs(*args, **kwargs)
 
+        parser_kwargs = {"parser_mode": "yaml_with_merge"}
         for k, v in parser_kwargs.items():
             main_kwargs.setdefault(k, v)
         for subcommand in self.subcommands():
@@ -61,19 +61,6 @@ class LightningCLI(_LightningCLI):
             default=None,
             help="Configuration for the optimizers and lr schedulers.",
         )
-
-    def parse_arguments(self, parser: LightningArgumentParser, args: ArgsType) -> None:
-        """Parses command line arguments and stores it in ``self.config``."""
-        if args is not None and len(sys.argv) > 1:
-            rank_zero_warn(
-                "LightningCLI's args parameter is intended to run from within Python like if it were from the command "
-                "line. To prevent mistakes it is not recommended to provide both args and command line arguments, got: "
-                f"sys.argv[1:]={sys.argv[1:]}, args={args}."
-            )
-        if isinstance(args, (dict, Namespace)):
-            self.config = parser.parse_object(args)
-        else:
-            self.config = parser.parse_args(args)
 
     def before_instantiate_classes(self) -> None:
         """Implement to run some code before instantiating the classes."""
