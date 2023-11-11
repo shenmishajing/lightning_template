@@ -11,6 +11,8 @@ A generic project template lib based on [pytorch lightning](https://pytorch-ligh
 - Hyperparameters tuning via Wandb, see the [doc](docs/configs/argument_parsers/json_file.md) and [wandb sweep](https://docs.wandb.ai/guides/sweeps).
 - Powerful and flexible LightningModule and LightningDataModule base class.
 - Useful auto lr finder and auto batch size scaler, see [doc](docs/tools/cli.md).
+- Useful tools to compare the speed of different models, see [speed-benchmark lib](https://github.com/shenmishajing/speed_benchmark)
+- Useful command line scripts launcher, see [shell-command-launcher lib](https://github.com/shenmishajing/shell_command_launcher)
 
 ## Installation
 
@@ -23,7 +25,7 @@ This project is based on the [lightning CLI](https://pytorch-lightning.readthedo
 
 ### Create models and datasets
 
-Like [pytorch lightning](https://pytorch-lightning.readthedocs.io/en/stable/), we use LightningModule to implement the model and train, val, and test loop, and use LightningDataModule to implement dataset and dataloaders, for detail, see [model doc](docs/core/model.md) and [dataset doc](docs/core/dataset.md)
+Similar to [pytorch lightning](https://pytorch-lightning.readthedocs.io/en/stable/), we use LightningModule to implement the model and train, val, and test loop, and use LightningDataModule to implement dataset and dataloaders, for details, see [model doc](docs/core/model.md) and [dataset doc](docs/core/dataset.md)
 
 ### Config optimizers and lr schedulers
 
@@ -45,4 +47,4 @@ See [speed-benchmark lib](https://github.com/shenmishajing/speed_benchmark)
 
 ### Shell Command Launcher
 
-See [shell-command-launcher lib](https://github.com/shenmishajing/shell_command_launcherd)
+See [shell-command-launcher lib](https://github.com/shenmishajing/shell_command_launcher)

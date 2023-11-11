@@ -1,12 +1,12 @@
 ## Optimizer config
 
-[lightning CLI](https://pytorch-lightning.readthedocs.io/en/stable/cli/lightning_cli.html) only support [one optimizer](https://pytorch-lightning.readthedocs.io/en/stable/cli/lightning_cli_intermediate_2.html#multiple-optimizers) and [at most one lr scheduler](https://pytorch-lightning.readthedocs.io/en/stable/cli/lightning_cli_intermediate_2.html#multiple-schedulers) using `--optimizer` and `--lr_scheduler` flags, which may can not satisfy our need sometimes.
+[lightning CLI](https://pytorch-lightning.readthedocs.io/en/stable/cli/lightning_cli.html) only supports [one optimizer](https://pytorch-lightning.readthedocs.io/en/stable/cli/lightning_cli_intermediate_2.html#multiple-optimizers) and [at most one lr scheduler](https://pytorch-lightning.readthedocs.io/en/stable/cli/lightning_cli_intermediate_2.html#multiple-schedulers) using `--optimizer` and `--lr_scheduler` flags, which may not satisfy our needs sometimes.
 
-Therefore, we add a new flag named `--optimizer_config` to support more complex optimizer configuration. The value of `--optimizer_config` flag is a very complex object, let's describe it step by step.
+Therefore, we added a new flag named `--optimizer_config` to support more complex optimizer configurations. The value of `--optimizer_config` flag is a very complex object, let's describe it step by step.
 
 ## Overview
 
-First, we display the complete config object here, so you can get the whole picture, and jump back to here anytime you reading the following context.
+First, we display the complete config object here, so you can get the whole picture, and jump back to here anytime you read the following context.
 
 ```yaml
 optimizer_config:
@@ -70,7 +70,7 @@ optimizer_config:
 
 ## Single optimize config
 
-As described in [Overview](#overview), value of `--optimizer_config` flag is a very complex object, let's describe it level by level. First,the value should be a single `optimize_config` dict or a list of `optimize_config` dict, a single `optimize_config` dict is equal to a list with only one item which is a `optimize_config` dict.
+As described in [Overview](#overview), the value of `--optimizer_config` flag is a very complex object, let's describe it level by level. First of all, the value should be a single `optimize_config` dict or a list of `optimize_config` dict, a single `optimize_config` dict is equal to a list with only one item which is a `optimize_config` dict.
 
 ```yaml
 optimizer_config:
@@ -81,7 +81,7 @@ optimizer_config:
     -   <a single optimize_config object>
 ```
 
-A `optimize_config` dict can contains three keys, which are `optimizer` `frequency` and `lr_scheduler`, with values `<a optimizer config object>` `<null or int>` and `<a lightning lr scheduler config object>`.
+A `optimize_config` dict can contain three keys, which are `optimizer` `frequency` and `lr_scheduler`, with values `<a optimizer config object>` `<null or int>` and `<a lightning lr scheduler config object>`.
 
 ```yaml
 # optimize_config object
@@ -92,7 +92,7 @@ lr_scheduler:
     <a lightning lr scheduler config object>
 ```
 
-The `frequency` and `lr_scheduler` key is optional, so `<a optimizer config object>` will also can be put here and it will be warppered as `{'optimizer': <a optimizer config object> }`. The following `optimize_config` dict
+The `frequency` and `lr_scheduler` key are optional, so `<a optimizer config object>` can also be put here and it will be parsed as `{'optimizer': <an optimizer config object> }`, wich means that the following `optimize_config` dict
 
 ```yaml
 # optimize_config object
@@ -109,25 +109,25 @@ optimizer:
 
 ### `frequency` key
 
-The `frequency` key can only used when there are multi optimizers, and it have to neither set to None for all optimizers or set to int for all optimizers, it will raise an error if some optimizers set to None and others set to int.
+The `frequency` key can only used when there are multiple optimizers, and it has to be either set to None for all optimizers or set to int for all optimizers, it will raise an error if the values of `frequency` of some optimizers have been set to None and others have been set to int.
 
 #### `frequency` key is None
 
-When all `frequency` set to None, every optimizers will be used to update model on every batch.
+When all `frequency` are set to None, every optimizer will be used to update the model on every iteration.
 
 #### `frequency` key is int
 
-When all `frequency` set to int, every batch will select only one optimizer according to the batch idx, and only the selected one will be used to update model on this batch.
+When all `frequency` are set to int, only one optimizer will be selected to update the model on every iteration according to the batch index.
 
-For example, if there are two optimizers with `frequency` equal to 2 and 3 respectively. On every 5 batches, the first 2 batches will select the first optimizer and use it only to update the model, the last 3 batches will select the second optimizer and use it only to update the model. Therefore, set all `frequecy` to None is not equal to set all of them to `1`.
+For example, if there are two optimizers with `frequency` equal to 2 and 3 respectively. On every 5 batches, the first optimizer will selected on the first 2 batches and the second optimizer will be selected on the last 3 batches. For every batch, only the selected optimizer will be used to update the model. Therefore, setting all `frequecy` to None is not equal to setting all of them to `1`.
 
 ## Optimizer config
 
-`<a optimizer config object>` represent a optimizer following lightning CLI instantiate_class arguments format, which means it contains two keys named `class_path` and `init_args`. `class_path` is a import str to the class, `init_args` is optional, if exist, its value will be used to instantiate the class. For more details, see [arguments with class type doc](https://pytorch-lightning.readthedocs.io/en/stable/cli/lightning_cli_advanced_3.html#trainer-callbacks-and-arguments-with-class-type).
+`<a optimizer config object>` represents an optimizer following lightning CLI instantiate_class arguments format, which means it contains two keys named `class_path` and `init_args`. `class_path` is an import str to the class, `init_args` is optional, if exists its value will be used to instantiate the class. For more details, see [arguments with class type doc](https://pytorch-lightning.readthedocs.io/en/stable/cli/lightning_cli_advanced_3.html#trainer-callbacks-and-arguments-with-class-type).
 
-But, there is no way to specific model's parameters for optimizer, especially when there are many optimizers. Therefore, we add a method to support this. Every arguments in `init_args` work trivially, but the params where should be model's parameters work differently. We use a str or None or List[str, None] to represent a list of model's parameters. a str represent a list of model's parameters with name startswith this str, but if a parameter will only appear once, so if there are multi str match the same parameter, this parametr will be matched by the longest str. If some parameters do not be matched by any str, it will be matched by None.
+However, there is no way to specify the parameters for optimizers in the lightning CLI instantiate_class arguments format, especially when there are many optimizers. Therefore, we add a method to support this. We use a `str` or `None` or `List[str, None]` to represent a list of the model's parameters. a `str` represents a list of the model's parameters with a name starts with this str, but a parameter will only appear once, so if multiple strs match the same parameter, this parameter will be matched by the longest str. If some parameters are not matched by any str, it will be matched by None.
 
-For example, if a model has a fc layer and a backbone which contains layer 0-3. The following optimizer config
+For example, if a model has a fc layer and a backbone that contains layers 0-3. The following optimizer config
 
 ```yaml
 # optimizer config object
@@ -143,7 +143,7 @@ init_args:
     weight_decay: 1e-2
 ```
 
-will construct a optimizer with three params groups as follow:
+will construct an optimizer with three params groups as follows:
 
 ```yaml
 -   [ backbone.layer0, backbone.layer3 ]
@@ -153,7 +153,7 @@ will construct a optimizer with three params groups as follow:
 
 ## Lightning lr scheduler config
 
-`<a lightning lr scheduler config object>` represent a lightning lr scheduler, which contains several keys named `scheduler`, `interval`, `frequency`, etc. All keys other than `scheduler` are optional, and their default value as following, for more details, see [configure optimizers doc](https://pytorch-lightning.readthedocs.io/en/stable/common/lightning_module.html#configure-optimizers):
+`<a lightning lr scheduler config object>` represents a lightning lr scheduler, which contains several keys named `scheduler`, `interval`, `frequency`, etc. All keys other than `scheduler` are optional, and their default value is as follows, for more details, see [configure optimizers doc](https://pytorch-lightning.readthedocs.io/en/stable/common/lightning_module.html#configure-optimizers):
 
 ```yaml
 # lightning lr scheduler config object
@@ -169,13 +169,13 @@ lr_scheduler:
         <a warmup lr scheduler config object>
 ```
 
-In fact, `<a lightning lr scheduler config object>` also contains `opt_idx` and `reduce_on_plateau` keys, but lightning will set them automatically, so we do not need to set them maunally.
+In fact, `<a lightning lr scheduler config object>` also contains `opt_idx` and `reduce_on_plateau` keys, but lightning will set them automatically, so we do not need to set them manually.
 
 ## lr scheduler config
 
-As [optimizer config](#optimizer-config), we use lightning CLI instantiate_class arguments format to represent a lr scheduler. The optimizer argument of it will be set to the `optimizer` in the same `optim_config object`, so there is no need to set it maunally.
+For the [optimizer config](#optimizer-config), we use lightning CLI instantiate_class arguments format to represent a lr scheduler. The optimizer argument will be set to the `optimizer` in the same `optim_config object`, so there is no need to set it manually.
 
-For example, if a typical lr scheduler config will look like:
+For example, a typical lr scheduler config will look like this:
 
 ```yaml
 # lr scheduler config object
@@ -186,9 +186,9 @@ init_args:
 
 ## warmup lr scheduler config
 
-A warmup lr scheduler (implemented by [this method](model.md#manual-lr-scheduler)) config is a part-support Lightning lr scheduler config, which means only the scheduler and frequency key are supported, the `interval` will be set to `step` forcefully.
+A warmup lr scheduler (implemented by [this method](model.md#manual-lr-scheduler)) config is a part-support Lightning lr scheduler config, which means only the scheduler and frequency key are supported, and the `interval` will be set to `step` forcefully.
 
-A complete warmup lr scheduler config will look like:
+A complete warmup lr scheduler config will look like this:
 
 ```yaml
 # warmup lr scheduler config object
@@ -200,7 +200,7 @@ warmup_config:
     frequency: 1
 ```
 
-As the `frequecy` is optional, you omit it, and use a [lr scheduler config](#lr-scheduler-config) as warmup lr scheduler config. Therefore, it will look like:
+Since the `frequecy` is optional, you can omit it, and use a [lr scheduler config](#lr-scheduler-config) as a warmup lr scheduler config. Therefore, it will look like:
 
 ```yaml
 # warmup lr scheduler config object
@@ -210,7 +210,7 @@ warmup_config:
         warmup_iters: 500
 ```
 
-Furthermore, if you use the `utils.optim.WarmupScheduler` as warmup scheduler, you can omit it also, now the warmup scheduler config will look like:
+Furthermore, if you use the `lightning_template.utils.optim.WarmupScheduler` as warmup scheduler, you can omit it also, now the warmup scheduler config will look like this:
 
 ```yaml
 # warmup lr scheduler config object
@@ -218,4 +218,4 @@ warmup_config:
     warmup_iters: 500
 ```
 
-For more detail of `utils.optim.WarmupScheduler`, see [github source](https://github.com/shenmishajing/project_template/blob/main/utils/optim/warmup_lr_scheduler.py)
+For more detail of `lightning_template.utils.optim.WarmupScheduler`, see the [source code](https://github.com/shenmishajing/project_template/blob/main/utils/optim/warmup_lr_scheduler.py)

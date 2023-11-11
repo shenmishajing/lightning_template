@@ -1,6 +1,6 @@
 ## Recommend file sturcture
 
-Config files are suggested to put under `configs` folder with follow structure.
+Config files are suggested to be put under `configs` folder with the following structure.
 
 ```
 configs
@@ -28,10 +28,10 @@ configs
 
 ## Usage of config files
 
-Every config file under `configs/runs` is a complete config file, so you can run an experiment with just a config file from `configs/runs` following `--config` flag of lightning CLI. For example, to fit an example model on example dataset using 8 gpus with 2 batch size on every gpu and 1x schedule, you may run 
+Every config file under `configs/runs` is a complete config file, so you can run an experiment with just a config file from `configs/runs` following `--config` flag of lightning CLI. For example, to fit an example model on the example dataset using 8 gpus with batch size 2 on every gpu and 1x schedule, you may run 
 
 ```bash
 cli fit --config configs/runs/example_model/example_model_8xb2_1x_example_dataset.yaml
 ```
 
-But every other config file is just a part of complete config file, you should use them by combining them with each other or write a complete config file under `configs/runs` using `__base__` to inherit from them. For detail of inheriting config files, see [deep_update](deep_update.md).
+But every other config file is just a part of a complete config file, you should use them by combining them with each other or write a complete config file under `configs/runs` using `__base__` to inherit from them. For details on inheriting config files, see [deep_update](deep_update.md).

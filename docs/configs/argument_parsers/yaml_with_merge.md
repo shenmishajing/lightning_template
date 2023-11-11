@@ -1,14 +1,14 @@
 ## Introduction ##
 
-The default parser for lightning CLI, a yaml parser with [deep update](../deep_update.md) feature.
+The default parser for lightning CLI and a yaml parser with the [deep update](../deep_update.md) feature.
 
 ## Usage ##
 
-Use `--config` flag of lightning CLI to load a yaml config file with this parser. Support `__base__` and all [deep update](../deep_update.md) keyword, for detail of [deep update](../deep_update.md), see [deep update](../deep_update.md).
+Use the `--config` flag of lightning CLI to load a yaml config file with this parser. Support `__base__` and all [deep update](../deep_update.md) keywords, for more details of [deep update](../deep_update.md), see [deep update doc](../deep_update.md).
 
 ## Config inherit ##
 
-Use `__base__` keyword to inherit config files, value must be `str` or `List[str]`, which is relativa path of config file to inherit, can appear at any dict level.
+Use the `__base__` keyword to inherit config files. The value of it must be `str` or `List[str]`, which is a relative path of the config file to inherit and can appear at any dict level.
 
 For example (using yaml to present python dict).
 
@@ -62,7 +62,7 @@ config:
 ```
 ## Yaml import ##
 
-Yaml support anchor and aliased feature, but it's not convenient sometimes, so, you can use `__import__` keyword to create the anchor first, and use them in the config file. Carefully, the `__import__` keyword is only supported at the top level of config file.
+Yaml supports anchor and alias features, but it's not convenient sometimes, especially when you want to alias a part of key-value pairs in a dict. Therefore, you can use the `__import__` keyword to create the anchor first and use it in the config file, while the context under the `__import__` will be ignored during the parsing. Carefully, the `__import__` keyword is only supported at the top level of the config file.
 
 For example (using yaml to present python dict).
 

@@ -1,16 +1,16 @@
 ## Introduction ##
 
-A method to merge two objects, named source and override, use override to modify source data.
+A method to merge two objects, named `source` and `override`, use `override` to modify `source` data.
 
 ## Usage ##
 
-Source should be a dict or list, override must be a dict, otherwise return override directly.
+The `source` should be a dict or a list. The `override` must be a `dict`, or we will return the `override` directly.
 
-### When source is a dict ###
+### When the source is a dict ###
 
 #### delete key ####
 
-Use `__delete__` keyword to delete all keys in source, `True` for delete all, `str` or `List[str]` for specific keys.
+Use the `__delete__` keyword to delete keys in `source`, `True` for delete all, `str` or `List[str]` for specific keys.
 
 For example (using yaml to present python dict).
 
@@ -47,7 +47,7 @@ config:
 
 #### add key and modify key ####
 
-Just write the key-value pair to add or modify in source.
+Just write the key-value pair to add or modify context in the `source`.
 
 For example (using yaml to present python dict).
 
@@ -81,11 +81,11 @@ config:
         a: A
 ```
 
-### When source is a list ###
+### When the source is a list ###
 
 #### delete item ####
 
-Use `__delete__` keyword to delete all items in source, `True` for delete all, `int` or `List[int]` for specific items, negative int for counting from end.
+Use the `__delete__` keyword to delete items in the `source`, `True` for delete all, `int` or `List[int]` for specific items, and negative int for counting from the end.
 
 For example (using yaml to present python dict).
 
@@ -120,7 +120,7 @@ config:
 
 #### modify item ####
 
-Use `change_item` keyword to modify items in source, value mush be List[List[index, item]], change every index to corresponding item.
+Use the `change_item` keyword to modify items in the `source`, the value of it must be `List[List[index, item]]`. It will change every item at the index to the corresponding item.
 
 For example (using yaml to present python dict).
 
@@ -154,7 +154,7 @@ config:
 
 ##### pre items #####
 
-Use `pre_item` keyword to add items to the start of source, value mush be item or List[item]. If value if a list, add every item in it to source, otherwise, add the value to source.
+Use the `pre_item` keyword to add items to the beginning of the `source`, the value of it must be an item or a list. If the value is a list, every item in it will be added to the beginning of the `source`, otherwise, add the value to the beginning of the `source`.
 
 For example (using yaml to present python dict).
 
@@ -189,7 +189,7 @@ config:
 
 ##### post items #####
 
-Use `post_item` keyword to add items to the end of source, value mush be item or List[item]. If value if a list, add every item in it to source, otherwise, add the value to source.
+Use the `post_item` keyword to add items to the end of the `source`. The value of it must be an item or a list. If the value is a list, every item in it will be added to the end of the `source`, otherwise, we will add the value to the `source`.
 
 For example (using yaml to present python dict).
 
@@ -224,7 +224,7 @@ config:
 
 ##### insert items #####
 
-Use `insert_item` keyword to insert items to source, value mush be List[List[index, item] or List[index, item, extend]], insert item or a list of items to index position. If the index is bigger or equal than `len` of source or smaller than `-len` of source, this will work as `post_item` and `pre_item`. `extend` is a bool to indicated whether item is a list of items, you can omit it when it is False. This works well with `__delete__` and multi insert, the insert order and delete index will be calculated automatically.
+Use the `insert_item` keyword to insert items to the `source`. The value of it must be `List[List[index, item]` or `List[index, item, extend]]`, we will insert the item or the list of items to the position specified by the index. If the index is bigger or equal to the `len` of the `source` or smaller than the `-len` of the `source`, this will work as `post_item` and `pre_item`. The `extend` is a bool to indicate whether the item is a list of items or not. If it is set to `True`, the elements of the item will be inserted one by one and if it is set to `False`, the item will be treated as an element and will be inserted to the `source`. You can omit it when it is False. This works well with `__delete_`_` and multiple inserts, the insert order and delete index will be calculated automatically.
 
 For example (using yaml to present python dict).
 
@@ -287,7 +287,7 @@ config:
     E: [ A, C, D, B ]
 ```
 
-## All keywords ##
+## All Keywords ##
 
 | keyword       | value                                                                                                                                                      | effect                                                                                                 |
 | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
