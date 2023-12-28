@@ -35,7 +35,7 @@ classifiers = [
 [project.urls]
 Homepage = "https://github.com/shenmishajing/lightning_template"
 Repository = "https://github.com/shenmishajing/lightning_template"
-"Issue Tracker" = "https://github.com/shenmishajing/lightning_template/issues"
+Issues = "https://github.com/shenmishajing/lightning_template/issues"
 
 [project.scripts]
 cli = "lightning_template.tools.cli:main"
