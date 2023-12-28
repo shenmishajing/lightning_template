@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lightning-template"
+dynamic = ["version"]
+authors = [{ name = "shenmishajing", email = "shenmishajing@gmail.com" }]
+description = "A template wrapper for pytorch-lightning."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.8"
+dependencies = [
+    "lightning>=2.0.0",
+    "jsonargparse[all]",
+    "scikit-learn",
+    "speed-benchmark",
+    "shell-command-launcher",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Environment :: GPU :: NVIDIA CUDA",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Natural Language :: Chinese (Simplified)",
+]
+
+[project.urls]
+Homepage = "https://github.com/shenmishajing/lightning_template"
+Repository = "https://github.com/shenmishajing/lightning_template"
+"Issue Tracker" = "https://github.com/shenmishajing/lightning_template/issues"
+
+[project.scripts]
+cli = "lightning_template.tools.cli:main"
+lr_finder = "lightning_template.tools.model.lr_finder:main"
+batch_size_finder = "lightning_template.tools.model.batch_size_finder:main"
+model_statistics = "lightning_template.tools.model.model_statistics:main"
+
+[tool.setuptools_scm]
+version_file = "lightning_template/version.py"
