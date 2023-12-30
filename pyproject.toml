@@ -32,6 +32,11 @@ classifiers = [
     "Natural Language :: Chinese (Simplified)",
 ]
 
+[project.optional-dependencies]
+optional = ["wandb", "rich", "thop"]
+doc = ["sphinx", "myst-parser"]
+all = ["lightning-template[optional,doc]"]
+
 [project.urls]
 Homepage = "https://github.com/shenmishajing/lightning_template"
 Repository = "https://github.com/shenmishajing/lightning_template"

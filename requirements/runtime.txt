@@ -1,5 +1,0 @@
-scikit-learn
-lightning
-jsonargparse[all]
-speed-benchmark
-shell-command-launcher

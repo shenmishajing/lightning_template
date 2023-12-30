@@ -25,9 +25,8 @@ pip install lightning-tempalet
 
 #### For developers (install from source)
 
-Generally, you can just use the latest packages in `requirements.txt` without specifying their version, so you can use the command as follows to install this project and all required packages.
+Generally, you can just use the latest dependencies without specifying their version, so you can use the command as follows to install this project and all required dependencies.
 
 ```bash
-pip install -r requirements.txt
 pip install -e .
 ```
