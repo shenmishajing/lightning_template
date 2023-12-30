@@ -34,8 +34,15 @@ classifiers = [
 
 [project.optional-dependencies]
 optional = ["wandb", "rich", "thop"]
-doc = ["sphinx", "myst-parser"]
-all = ["lightning-template[optional,doc]"]
+doc = [
+    "sphinx",
+    "sphinx-autobuild",
+    "sphinx-autoapi",
+    "sphinx-book-theme",
+    "myst-parser",
+]
+build = ['build']
+all = ["lightning-template[optional,doc,build]"]
 
 [project.urls]
 Homepage = "https://github.com/shenmishajing/lightning_template"
