@@ -1,4 +1,4 @@
-## Optimizer config
+# Optimizer Config
 
 [lightning CLI](https://pytorch-lightning.readthedocs.io/en/stable/cli/lightning_cli.html) only supports [one optimizer](https://pytorch-lightning.readthedocs.io/en/stable/cli/lightning_cli_intermediate_2.html#multiple-optimizers) and [at most one lr scheduler](https://pytorch-lightning.readthedocs.io/en/stable/cli/lightning_cli_intermediate_2.html#multiple-schedulers) using `--optimizer` and `--lr_scheduler` flags, which may not satisfy our needs sometimes.
 

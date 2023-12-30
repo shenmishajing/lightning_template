@@ -1,3 +1,5 @@
+# LightningModule
+
 ## Introduction
 
 The base LightningModule to inherit.

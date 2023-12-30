@@ -1,3 +1,5 @@
+# Json File Argument Parser
+
 ## Introduction ##
 
 A json file parser for lightning CLI, used by wandb sweep.

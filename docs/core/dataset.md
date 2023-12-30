@@ -1,3 +1,5 @@
+# LightningDataModule
+
 ## Introduction
 
 The base LightningDataModule to inherit.

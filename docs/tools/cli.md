@@ -1,4 +1,4 @@
-## Interface
+# Command Line Interface
 
 lightning-template provides several cli scripts for you to use. Generally, you can run all scripts under `lightning_tempalet/tools` by `python -m lightning_template.tools.<path.to.scripts>`, for example, use `python -m lightning_template.tools.cli` to run `tools/cli.py`. For convenience, we also provide some aliases for these scripts. All of them are as follows:
 

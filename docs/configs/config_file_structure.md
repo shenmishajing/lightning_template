@@ -1,4 +1,4 @@
-## Recommend file sturcture
+# Recommend Config File Sturcture
 
 Config files are suggested to be put under `configs` folder with the following structure.
 
