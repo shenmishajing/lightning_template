@@ -37,9 +37,10 @@ optional = ["wandb", "rich", "thop"]
 doc = [
     "sphinx",
     "sphinx-autobuild",
-    "sphinx-autoapi",
     "sphinx-book-theme",
+    "sphinx-autoapi",
     "myst-parser",
+    "sphinx_design",
 ]
 build = ['build']
 all = ["lightning-template[optional,doc,build]"]
@@ -47,6 +48,7 @@ all = ["lightning-template[optional,doc,build]"]
 [project.urls]
 Homepage = "https://github.com/shenmishajing/lightning_template"
 Repository = "https://github.com/shenmishajing/lightning_template"
+Documentation = "https://lightning-template.readthedocs.io"
 Issues = "https://github.com/shenmishajing/lightning_template/issues"
 
 [project.scripts]

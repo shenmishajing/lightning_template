@@ -37,13 +37,15 @@ version: str = ".".join(release.split(".")[:2])
 extensions = [
     "sphinx.ext.duration",
     "sphinx.ext.doctest",
+    "sphinx.ext.napoleon",
     "sphinx.ext.autodoc",
     "autoapi.extension",
-    "sphinx.ext.napoleon",
     "myst_parser",
+    "sphinx_design",
 ]
 
 autoapi_dirs = ["../lightning_template"]
+autoapi_add_toctree_entry = False
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

@@ -1,50 +1,56 @@
-## Introduction
+# Lightning Template
 
-A generic project template lib based on [pytorch lightning](https://pytorch-lightning.readthedocs.io/en/stable/) for [project-template](https://github.com/shenmishajing/project_template)
+[![platform](https://img.shields.io/badge/platform-Linux%7CWindows%7CmacOS-blue)](https://lightning-template.readthedocs.io)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/lightning-template)](https://pypi.org/project/lightning-template/)
+[![PyPI](https://img.shields.io/pypi/v/lightning-template)](https://pypi.org/project/lightning-template)
+[![license](https://img.shields.io/github/license/shenmishajing/lightning_template)](https://github.com/shenmishajing/lightning_template/blob/master/LICENSE)
+[![Code Style](https://img.shields.io/badge/code%20style-black-000000)](https://github.com/shenmishajing/lightning_template)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 
-## Feature
 
-- All features from [pytorch lightning](https://pytorch-lightning.readthedocs.io/en/stable/) and [lightning CLI](https://pytorch-lightning.readthedocs.io/en/stable/cli/lightning_cli.html). Especially, the experiment manager feature, auto-implementing multi-node, multi-device, multi-accelerator support, etc.
-- Powerful [deep update](docs/configs/deep_update.md) feature for config file inherit to manage your config files more hierarchically, see also [recommend structure](docs/configs/config_file_structure.md).
-- Multi and complex optimizers and lr_scheduler from CLI config support, see [doc](docs/core/optimizer_config.md).
-- Cross-validation support with only one argument you have to change, see [doc](docs/core/trainer.md).
-- Hyperparameters tuning via Wandb, see the [doc](docs/configs/argument_parsers/json_file.md) and [wandb sweep](https://docs.wandb.ai/guides/sweeps).
-- Powerful and flexible LightningModule and LightningDataModule base class.
-- Useful auto lr finder and auto batch size scaler, see [doc](docs/tools/cli.md).
-- Useful tools to compare the speed of different models, see [speed-benchmark lib](https://github.com/shenmishajing/speed_benchmark)
-- Useful command line scripts launcher, see [shell-command-launcher lib](https://github.com/shenmishajing/shell_command_launcher)
+[📘Documentation](https://lightning-template.readthedocs.io) |
+[🛠️Installation](https://lightning-template.readthedocs.io/en/latest/get_started/installation.html) |
+[🤔Reporting Issues](https://github.com/shenmishajing/lightning_template/issues)
+
+Lightning Template is a generic project template lib based on [pytorch lightning](https://pytorch-lightning.readthedocs.io/en/stable/) for [project-template](https://github.com/shenmishajing/project_template). See the [documentation](https://lightning-template.readthedocs.io) for more details.
 
 ## Installation
 
-See [installation docs](docs/installation/installation.md) for details.
+```bash
+pip install lightning-template
+```
 
-## Usage
+See [installation docs](docs/get_started/installation.md) for details.
 
-### CLI
-This project is based on the [lightning CLI](https://pytorch-lightning.readthedocs.io/en/stable/cli/lightning_cli.html), so it supports all features from [pytorch lightning](https://pytorch-lightning.readthedocs.io/en/stable/) and [lightning CLI](https://pytorch-lightning.readthedocs.io/en/stable/cli/lightning_cli.html), you can get a brief introduction from [cli doc](docs/tools/cli.md).
+## Contribution
 
-### Create models and datasets
+See [contribution docs](docs/get_started/contribution.md) for details.
 
-Similar to [pytorch lightning](https://pytorch-lightning.readthedocs.io/en/stable/), we use LightningModule to implement the model and train, val, and test loop, and use LightningDataModule to implement dataset and dataloaders, for details, see [model doc](docs/core/model.md) and [dataset doc](docs/core/dataset.md)
+## Release versions
 
-### Config optimizers and lr schedulers
+We use [setuptools_scm](https://github.com/pypa/setuptools_scm/) for versioning. For the versions available, see the [tags](https://github.com/shenmishajing/lightning_template/tags) on this repository.
 
-[pytorch lightning](https://pytorch-lightning.readthedocs.io/en/stable/) does not support multi optimizers and lr schedulers from cli, we add this feature, see [doc](docs/core/optimizer_config.md) for detail.
+## License
 
-### Cross-validation
+This project is licensed under the MIT License.
 
-Set `num_folds` of the trainer to an int bigger than one to start cross-validation, for details, see [doc](docs/core/trainer.md).
+## Star History
 
-### Config files
-
-See [config file structure](docs/configs/config_file_structure.md), [deep update](docs/configs/deep_update.md), [yaml with merge](docs/configs/argument_parsers/yaml_with_merge.md), and [json file](docs/configs/argument_parsers/json_file.md).
-
-You can get some examples from [project_template](https://github.com/shenmishajing/project_template)
-
-### Speed Benchmark
-
-See [speed-benchmark lib](https://github.com/shenmishajing/speed_benchmark)
-
-### Shell Command Launcher
-
-See [shell-command-launcher lib](https://github.com/shenmishajing/shell_command_launcher)
+<picture>
+  <source
+    media="(prefers-color-scheme: dark)"
+    srcset="
+      https://api.star-history.com/svg?repos=shenmishajing/lightning_template&type=Date&theme=dark
+    "
+  />
+  <source
+    media="(prefers-color-scheme: light)"
+    srcset="
+      https://api.star-history.com/svg?repos=shenmishajing/lightning_template&type=Date
+    "
+  />
+  <img
+    alt="Star History Chart"
+    src="https://api.star-history.com/svg?repos=shenmishajing/lightning_template&type=Date"
+  />
+</picture>
