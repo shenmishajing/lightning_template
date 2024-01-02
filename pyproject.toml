@@ -42,7 +42,7 @@ doc = [
     "myst-parser",
     "sphinx_design",
 ]
-build = ['build']
+build = ["build"]
 all = ["lightning-template[optional,doc,build]"]
 
 [project.urls]
