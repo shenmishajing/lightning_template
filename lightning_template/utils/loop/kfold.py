@@ -28,8 +28,8 @@ class KFoldLoop(_Loop):
         """Nothing to reset in this loop."""
 
     def on_run_start(self, *args: Any, **kwargs: Any) -> None:
-        """Used to call `setup_folds` from the `BaseKFoldDataModule` instance and store the original weights of the
-        model."""
+        """Used to call `setup_folds` from the `BaseKFoldDataModule` instance and store
+        the original weights of the model."""
         self.trainer.datamodule.setup_folds(self.num_folds)
         self.lightning_module_state_dict = deepcopy(
             self.trainer.lightning_module.state_dict()
@@ -49,7 +49,8 @@ class KFoldLoop(_Loop):
         self.current_fold += 1  # increment fold tracking number.
 
     def on_advance_end(self) -> None:
-        """Used to save the weights of the current fold and reset the LightningModule and its optimizers."""
+        """Used to save the weights of the current fold and reset the LightningModule
+        and its optimizers."""
         self.trainer.save_checkpoint(
             osp.join(self.export_path, f"model_fold_{self.current_fold}.pt")
         )

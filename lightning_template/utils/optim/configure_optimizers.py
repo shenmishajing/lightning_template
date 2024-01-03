@@ -10,8 +10,7 @@ from torch.optim import Optimizer
 
 
 def parser_optim_config(optim_config):
-    """
-    Parse the optimizer config.
+    """Parse the optimizer config.
 
     Args:
         optim_config (dict): The optimizer and lr_scheduler config.
@@ -65,8 +64,7 @@ def parser_optim_config(optim_config):
 
 
 def get_parameters(model, all_required_parameters):
-    """
-    Get all optimizer parameters.
+    """Get all optimizer parameters.
 
     Args:
         model: a LightningModule.
@@ -92,8 +90,7 @@ def get_parameters(model, all_required_parameters):
 
 
 def construct_lr_scheduler(lr_scheduler, optimizer):
-    """
-    Constructs the lr_scheduler.
+    """Constructs the lr_scheduler.
 
     Args:
         lr_scheduler: dictionary containing lr_scheduler configuration.

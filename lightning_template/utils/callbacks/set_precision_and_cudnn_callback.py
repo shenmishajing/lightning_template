@@ -3,8 +3,9 @@ from lightning.pytorch import Callback
 
 
 class SetPrecisionAndCudnnCallback(Callback):
-    """
-    Set fp32 and fp16 precision and cudnn when training starts. For details, see
+    """Set fp32 and fp16 precision and cudnn when training starts.
+
+    For details, see
     https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html
     https://pytorch.org/docs/stable/generated/torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction.html
     https://pytorch.org/docs/stable/generated/torch.set_deterministic_debug_mode.html#torch.set_deterministic_debug_mode

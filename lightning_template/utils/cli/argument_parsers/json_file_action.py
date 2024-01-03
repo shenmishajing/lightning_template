@@ -6,7 +6,8 @@ from jsonargparse.actions import Action, FilesCompleterMethod, _ActionSubCommand
 
 
 class ActionJsonFile(Action, FilesCompleterMethod):
-    """Action to indicate that an argument is a configuration file or a configuration string in json format."""
+    """Action to indicate that an argument is a configuration file or a configuration
+    string in json format."""
 
     def __init__(self, **kwargs):
         """Initializer for ActionJsonFile instance."""
@@ -29,7 +30,8 @@ class ActionJsonFile(Action, FilesCompleterMethod):
         super().__init__(**kwargs)
 
     def __call__(self, parser, cfg, values, option_string=None):
-        """Parses the given configuration and adds all the corresponding keys to the namespace.
+        """Parses the given configuration and adds all the corresponding keys to the
+        namespace.
 
         Raises:
             TypeError: If there are problems parsing the configuration.

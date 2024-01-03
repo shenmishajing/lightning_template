@@ -2,8 +2,8 @@ from typing import Dict, List
 
 
 def deep_update(source, override):
-    """
-    Update a nested dictionary or similar mapping.
+    """Update a nested dictionary or similar mapping.
+
     Modify ``source`` in place.
     """
     if isinstance(source, Dict) and isinstance(override, Dict):
