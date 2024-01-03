@@ -1,7 +1,17 @@
 from typing import Dict, List
 
-from jsonargparse.typehints import is_subclass_spec
+from jsonargparse import Namespace
 from lightning.pytorch.cli import instantiate_class
+
+
+def is_subclass_spec(val):
+    is_class = isinstance(val, (dict, Namespace)) and "class_path" in val
+    if is_class:
+        keys = getattr(val, "__dict__", val).keys()
+        is_class = (
+            len(set(keys) - {"class_path", "init_args", "dict_kwargs", "__path__"}) == 0
+        )
+    return is_class
 
 
 def recursive_instantate_class(config):

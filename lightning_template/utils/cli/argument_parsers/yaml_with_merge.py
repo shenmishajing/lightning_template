@@ -1,16 +1,104 @@
 import copy
 import os
+import re
+from contextlib import contextmanager
+from contextvars import ContextVar
+from typing import Iterator, Optional, Union
 
+import yaml
 from jsonargparse import Path, get_config_read_mode, set_dumper, set_loader
-from jsonargparse.loaders_dumpers import DefaultLoader, dumpers, yaml_load
-from jsonargparse.util import change_to_path_dir
 from yaml.constructor import FullConstructor
 
 from .deep_update import deep_update
 
+current_path_dir: ContextVar[Optional[str]] = ContextVar(
+    "current_path_dir", default=None
+)
+
+
+@contextmanager
+def change_to_path_dir(path: Optional["Path"]) -> Iterator[Optional[str]]:
+    """A context manager for running code in the directory of a path."""
+    path_dir = current_path_dir.get()
+    chdir: Union[bool, str] = False
+    if path is not None:
+        if path._url_data and (path.is_url or path.is_fsspec):
+            scheme = path._url_data.scheme
+            path_dir = path._url_data.url_path
+        else:
+            scheme = ""
+            path_dir = path.absolute
+            chdir = True
+        if "d" not in path.mode:
+            path_dir = os.path.dirname(path_dir)
+        path_dir = scheme + path_dir
+
+    token = current_path_dir.set(path_dir)
+    if chdir and path_dir:
+        chdir = os.getcwd()
+        path_dir = os.path.abspath(path_dir)
+        os.chdir(path_dir)
+
+    try:
+        yield path_dir
+    finally:
+        current_path_dir.reset(token)
+        if chdir:
+            os.chdir(chdir)
+
+
+class DefaultLoader(getattr(yaml, "CSafeLoader", yaml.SafeLoader)):  # type: ignore
+    pass
+
+
+# https://stackoverflow.com/a/37958106/2732151
+def remove_implicit_resolver(cls, tag_to_remove):
+    if "yaml_implicit_resolvers" not in cls.__dict__:
+        cls.yaml_implicit_resolvers = cls.yaml_implicit_resolvers.copy()
+
+    for first_letter, mappings in cls.yaml_implicit_resolvers.items():
+        cls.yaml_implicit_resolvers[first_letter] = [
+            (tag, regexp) for tag, regexp in mappings if tag != tag_to_remove
+        ]
+
+
+remove_implicit_resolver(DefaultLoader, "tag:yaml.org,2002:timestamp")
+remove_implicit_resolver(DefaultLoader, "tag:yaml.org,2002:float")
+
+
+DefaultLoader.add_implicit_resolver(
+    "tag:yaml.org,2002:float",
+    re.compile(
+        """^(?:
+     [-+]?(?:[0-9][0-9_]*)\\.[0-9_]*(?:[eE][-+]?[0-9]+)?
+    |[-+]?(?:[0-9][0-9_]*)(?:[eE][-+]?[0-9]+)
+    |\\.[0-9_]+(?:[eE][-+][0-9]+)?
+    |[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*
+    |[-+]?\\.(?:inf|Inf|INF)
+    |\\.(?:nan|NaN|NAN))$""",
+        re.X,
+    ),
+    list("-+0123456789."),
+)
+
 DefaultLoader.add_constructor(
     "tag:yaml.org,2002:python/tuple", FullConstructor.construct_python_tuple
 )
+
+
+def yaml_load(stream):
+    if stream.strip() == "-":
+        value = stream
+    else:
+        value = yaml.load(stream, Loader=DefaultLoader)
+    if isinstance(value, dict) and value and all(v is None for v in value.values()):
+        if len(value) == 1 and stream.strip() == next(iter(value.keys())) + ":":
+            value = stream
+        else:
+            keys = set(stream.strip(" {}").replace(" ", "").split(","))
+            if len(keys) > 0 and keys == set(value.keys()):
+                value = stream
+    return value
 
 
 def get_cfg_from_path(cfg_path):
@@ -108,4 +196,4 @@ def yaml_with_merge_load(stream, path=None, ext_vars=None):
 
 
 set_loader("yaml_with_merge", yaml_with_merge_load)
-set_dumper("yaml_with_merge", dumpers["yaml"])
+set_dumper("yaml_with_merge", lambda data: yaml.safe_dump(data))
