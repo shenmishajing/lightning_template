@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.7 (2024-01-03)
+
+### Fix
+
+- **pyproject.commitizen**: use annotated tags instead of light weighted tags
+
 ## 1.4.6 (2024-01-03)
 
 ### Fix
