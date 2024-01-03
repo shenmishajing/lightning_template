@@ -1,12 +1,18 @@
 # Lightning Template
 
 [![platform](https://img.shields.io/badge/platform-Linux%7CWindows%7CmacOS-blue)](https://lightning-template.readthedocs.io)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/lightning-template)](https://pypi.org/project/lightning-template/)
 [![PyPI](https://img.shields.io/pypi/v/lightning-template)](https://pypi.org/project/lightning-template)
-[![license](https://img.shields.io/github/license/shenmishajing/lightning_template)](https://github.com/shenmishajing/lightning_template/blob/master/LICENSE)
-[![Code Style](https://img.shields.io/badge/code%20style-black-000000)](https://github.com/shenmishajing/lightning_template)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/lightning-template)](https://pypi.org/project/lightning-template/)
+[![license](https://img.shields.io/pypi/l/lightning_template)](https://github.com/shenmishajing/lightning_template/blob/master/LICENSE)
+[![PyPI Package download count (per month)](https://img.shields.io/pypi/dm/lightning_template)](https://pypi.org/project/lightning_template/)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
-
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![Docformatter](https://img.shields.io/badge/%20formatter-docformatter-fedcba.svg)](https://github.com/PyCQA/docformatter)
+[![Google Style](https://img.shields.io/badge/%20style-google-3666d6.svg)](https://google.github.io/styleguide/pyguide.html#s3.8-comments-and-docstrings)
+[![Actions status](https://img.shields.io/github/actions/workflow/status/shenmishajing/lightning_template/python-publish.yml?branch=master)](https://github.com/shenmishajing/lightning_template/actions/workflow/python-publish.yml)
+[![codecov.io](https://img.shields.io/codecov/c/github/shenmishajing/lightning_template.svg)](https://codecov.io/github/shenmishajing/lightning_template?branch=master)
+[![Contributors](https://img.shields.io/github/contributors/shenmishajing/lightning_template.svg)](https://github.com/shenmishajing/lightning_template/graphs/contributors)
 
 [📘Documentation](https://lightning-template.readthedocs.io) |
 [🛠️Installation](https://lightning-template.readthedocs.io/en/latest/get_started/installation.html) |
