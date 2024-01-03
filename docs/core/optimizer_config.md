@@ -165,7 +165,7 @@ lr_scheduler:
     monitor: val_loss
     strict: True
     name: null
-    warmup_config: 
+    warmup_config:
         <a warmup lr scheduler config object>
 ```
 

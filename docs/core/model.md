@@ -15,13 +15,13 @@ The first argument is the `model`. We recommend you inherit the base LightningMo
 ### ckpt_path
 
 A list of path of checkpoints, if you pass this argument, the checkpoints will be loaded from the path and be used to init the model sequentially.
- 
+
 ### evaluator_cfg
 
 A dict to define your evaluators, which will be split for different split datasets. For more details, see the [Split attr set doc](dataset.md#split-attr-set) in the dataset doc. You can register all the evaluators as submodels of your model by setting the `evaluator_as_submodule` to `True`.
 
 ### loss_weights
- 
+
 A dict for loss weights, if you use the `loss_step` method from the base LightningModule, the loss dict will multi the loss weight dict before calculating the total loss.
 
 ### predict_tasks

@@ -28,7 +28,7 @@ configs
 
 ## Usage of config files
 
-Every config file under `configs/runs` is a complete config file, so you can run an experiment with just a config file from `configs/runs` following `--config` flag of lightning CLI. For example, to fit an example model on the example dataset using 8 gpus with batch size 2 on every gpu and 1x schedule, you may run 
+Every config file under `configs/runs` is a complete config file, so you can run an experiment with just a config file from `configs/runs` following `--config` flag of lightning CLI. For example, to fit an example model on the example dataset using 8 gpus with batch size 2 on every gpu and 1x schedule, you may run
 
 ```bash
 cli fit --config configs/runs/example_model/example_model_8xb2_1x_example_dataset.yaml
