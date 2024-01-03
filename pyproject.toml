@@ -66,6 +66,7 @@ local_scheme = "dirty-tag"
 [tool.commitizen]
 name = "cz_conventional_commits"
 tag_format = "$version"
+annotated_tag = true
 version_scheme = "pep440"
 version_provider = "scm"
 changelog_file = "docs/get_started/changelog.md"
