@@ -51,6 +51,7 @@ Homepage = "https://github.com/shenmishajing/lightning_template"
 Repository = "https://github.com/shenmishajing/lightning_template"
 Documentation = "https://lightning-template.readthedocs.io"
 Issues = "https://github.com/shenmishajing/lightning_template/issues"
+Changelog = "https://github.com/shenmishajing/lightning_template/blob/main/docs/get_started/changelog.md"
 
 [project.scripts]
 cli = "lightning_template.tools.cli:main"
