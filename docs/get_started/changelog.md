@@ -1,3 +1,7 @@
+# Changelog
+
+Latest release: 1.4.4
+
 ## 1.4.4 (2024-01-03)
 
 ### Fix
