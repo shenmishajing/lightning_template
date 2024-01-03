@@ -23,6 +23,6 @@ python -m build
 
 See the github action workflow file [python-publish.yml](https://github.com/shenmishajing/lightning_template/blob/master/.github/workflows/python-publish.yml) for details.
 
-### Code Style
+## Code Style
 
 The code is formatted using [black](https://github.com/python/black).
