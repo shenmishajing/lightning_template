@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.6 (2024-01-03)
+
+### Fix
+
+- **parsers**: fix using non-public api of jsonargparse bug
+
 ## 1.4.5 (2024-01-03)
 
 ### Fix
