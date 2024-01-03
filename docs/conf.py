@@ -6,6 +6,8 @@
 
 # -- Path setup --------------------------------------------------------------
 
+from importlib.metadata import version as get_version
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -20,8 +22,6 @@
 project = "lightning-template"
 copyright = "2023, shenmishajing"
 author = "shenmishajing"
-
-from importlib.metadata import version as get_version
 
 # The full version, including alpha/beta/rc tags
 release: str = get_version("lightning-template")
