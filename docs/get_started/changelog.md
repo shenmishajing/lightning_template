@@ -2,6 +2,12 @@
 
 Latest release: 1.4.4
 
+## 1.4.5 (2024-01-03)
+
+### Fix
+
+- **changelog**: fix changelog name bug, add title for changelog
+
 ## 1.4.4 (2024-01-03)
 
 ### Fix
