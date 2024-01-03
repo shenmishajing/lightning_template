@@ -10,9 +10,11 @@
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Docformatter](https://img.shields.io/badge/%20formatter-docformatter-fedcba.svg)](https://github.com/PyCQA/docformatter)
 [![Google Style](https://img.shields.io/badge/%20style-google-3666d6.svg)](https://google.github.io/styleguide/pyguide.html#s3.8-comments-and-docstrings)
-[![Actions status](https://img.shields.io/github/actions/workflow/status/shenmishajing/lightning_template/python-publish.yml?branch=master)](https://github.com/shenmishajing/lightning_template/actions/workflow/python-publish.yml)
 [![codecov.io](https://img.shields.io/codecov/c/github/shenmishajing/lightning_template.svg)](https://codecov.io/github/shenmishajing/lightning_template?branch=master)
 [![Contributors](https://img.shields.io/github/contributors/shenmishajing/lightning_template.svg)](https://github.com/shenmishajing/lightning_template/graphs/contributors)
+[![Publish status](https://github.com/shenmishajing/lightning_template/actions/workflows/publish.yml/badge.svg)](https://github.com/shenmishajing/lightning_template/actions/workflows/publish.yml)
+[![pre_commit_hooks status](https://github.com/shenmishajing/lightning_template/actions/workflows/check_pre_commit_hooks.yml/badge.svg)](https://github.com/shenmishajing/lightning_template/actions/workflows/check_pre_commit_hooks.yml)
+[![commit_messages status](https://github.com/shenmishajing/lightning_template/actions/workflows/check_commit_messages.yml/badge.svg)](https://github.com/shenmishajing/lightning_template/actions/workflows/check_commit_messages.yml)
 
 [📘Documentation](https://lightning-template.readthedocs.io) |
 [🛠️Installation](https://lightning-template.readthedocs.io/en/latest/get_started/installation.html) |
