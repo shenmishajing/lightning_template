@@ -34,6 +34,7 @@ classifiers = [
 
 [project.optional-dependencies]
 optional = ["wandb", "rich", "thop"]
+dev = ["pre-commit", "commitizen"]
 doc = [
     "sphinx",
     "sphinx-autobuild",
@@ -43,7 +44,7 @@ doc = [
     "sphinx_design",
 ]
 build = ["build"]
-all = ["lightning-template[optional,doc,build]"]
+all = ["lightning-template[optional,dev,doc,build]"]
 
 [project.urls]
 Homepage = "https://github.com/shenmishajing/lightning_template"
