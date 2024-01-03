@@ -5,17 +5,32 @@
 ```bash
 git clone https://github.com/shenmishajing/lightning_template.git
 cd lightning_template
-pip install -e ".[all]"
+pip install -e ".[dev]"
 pre-commit install
 ```
 
 ### Build Documents
 
+Install the required dependencies for building documents.
+
+```bash
+pip install -e ".[docs]"
+```
+
+Launch the live server for building and previewing documents.
 ```bash
 sphinx-autobuild docs docs/_build
 ```
 
 ### Build Package
+
+Install the required dependencies for building package.
+
+```bash
+pip install -e ".[build]"
+```
+
+Build the package.
 
 ```bash
 python -m build
@@ -23,6 +38,20 @@ python -m build
 
 See the github action workflow file [python-publish.yml](https://github.com/shenmishajing/lightning_template/blob/master/.github/workflows/python-publish.yml) for details.
 
-## Code Style
+## Code Style and Git Hooks
 
-The code is formatted using [black](https://github.com/python/black).
+The code is formatted and linted by [ruff](https://github.com/astral-sh/ruff). The docstring is in [Google style](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html) and formatted by [docformatter](https://github.com/PyCQA/docformatter). The spelling is checked by [codespell](https://github.com/codespell-project/codespell). All commit messages should follow the [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) style to generate the changelog and semantic version automatically.
+
+All the above requirements are checked by [pre-commit](https://pre-commit.com/) hooks. You can install them by `pre-commit install` after you clone the repo. See the [pre-commit config file](https://github.com/shenmishajing/lightning_template/blob/main/.pre-commit-config.yaml) for details.
+
+## Version, Tag and Release
+
+We use [commitizen](https://github.com/commitizen-tools/commitizen) to bump the semantic version, create tags and generate the changelog automatically according to the commit messages. Then, [setuptools_scm](https://github.com/pypa/setuptools_scm) is used to generate the version number from the tags. Therefore, all commit messages should follow the [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) style to facilitate the version management tools.
+
+Fortunately, the [commitizen](https://github.com/commitizen-tools/commitizen) can be used to generate the commit messages in the [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) style. The whole process of contribution is as follows:
+
+- Install commitizen. You can install it by `pip install commitizen`, or if you have installed the `[dev]` extra dependencies, you can skip this step since [commitizen](https://github.com/commitizen-tools/commitizen) has already been included in the `[dev]` extra dependencies. Or if you are using [vscode](https://code.visualstudio.com/), you can install the [vscode-commitizen](https://marketplace.visualstudio.com/items?itemName=KnisterPeter.vscode-commitizen) extension.
+- Make changes.
+- Commit changes. Then you can use `cz commit` to commit your changes. It will guide you to write the commit message in the [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) style.
+- Bump version (Optional). If you have made some commits related to codes with `feat`, `fix`, `refactor`, `perf` or `BREAKING CHANGE` category, you can use `cz bump` to bump the version and generate the changelog automatically.
+- Push changes. Then you can push your changes to the remote repo. If you have bumped the version, you should push the tags to the remote repo by `git push --tags`.
