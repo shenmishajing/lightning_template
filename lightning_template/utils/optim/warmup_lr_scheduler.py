@@ -21,11 +21,15 @@ class WarmupScheduler(_LRScheduler):
         verbose=False,
     ):
         # validate the "warmup" argument
-        assert warmup_mode is not None and warmup_mode in [
-            "constant",
-            "linear",
-            "exp",
-        ], f'"{warmup_mode}" is not a supported type for warming up, valid types are "constant" and "linear"'
+        assert (
+            warmup_mode is not None
+            and warmup_mode
+            in [
+                "constant",
+                "linear",
+                "exp",
+            ]
+        ), f'"{warmup_mode}" is not a supported type for warming up, valid types are "constant" and "linear"'
         assert warmup_iters > 0, '"warmup_iters" must be a positive integer'
         assert 0 < warmup_ratio <= 1.0, '"warmup_ratio" must be in range (0,1]'
 

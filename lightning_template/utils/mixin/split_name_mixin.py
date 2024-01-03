@@ -53,7 +53,7 @@ class SplitNameMixin:
         split_name_map,
         split_name,
         *args,
-        **kwargs
+        **kwargs,
     ):
         if split_prefix is not None:
             for s in split_prefix.split(split_attr_split_str):
@@ -124,14 +124,14 @@ class SplitNameMixin:
                                         cur_cfg,
                                         split_attr=split_attr,
                                         split_name=name,
-                                        **config
+                                        **config,
                                     )
                             else:
                                 self.substitute_split_name(
                                     res[name],
                                     split_attr=split_attr,
                                     split_name=name,
-                                    **config
+                                    **config,
                                 )
                 return res
         else:

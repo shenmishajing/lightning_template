@@ -97,7 +97,7 @@ class LightningDataModule(SplitNameMixin, _LightningDataModule):
         )
         return DataLoader(
             dataset,
-            **self.handle_dataloader_config(dataloader_cfg, dataset, split=split)
+            **self.handle_dataloader_config(dataloader_cfg, dataset, split=split),
         )
 
     def build_dataloader(self, split):
