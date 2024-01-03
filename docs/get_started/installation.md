@@ -2,7 +2,7 @@
 
 ## Automatical installation
 
-### For project template (install as a package)
+### Install as a package
 
 Use `pip` to install this package.
 
@@ -10,11 +10,13 @@ Use `pip` to install this package.
 pip install lightning-template
 ```
 
-### For developers (install from source)
+### Install from source
 
 Generally, you can just use the latest dependencies without specifying their version, so you can use the command as follows to install this project and all required dependencies.
 
 ```bash
+git clone https://github.com/shenmishajing/lightning_template.git
+cd lightning_template
 pip install -e .
 ```
 
