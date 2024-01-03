@@ -83,6 +83,7 @@ Lightning Template is a generic project template lib based on [pytorch lightning
 get_started/installation
 get_started/usage
 get_started/contribution
+get_started/changelog
 ```
 
 ```{toctree}
