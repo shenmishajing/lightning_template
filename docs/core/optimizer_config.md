@@ -92,7 +92,7 @@ lr_scheduler:
     <a lightning lr scheduler config object>
 ```
 
-The `frequency` and `lr_scheduler` key are optional, so `<a optimizer config object>` can also be put here and it will be parsed as `{'optimizer': <an optimizer config object> }`, wich means that the following `optimize_config` dict
+The `frequency` and `lr_scheduler` key are optional, so `<a optimizer config object>` can also be put here and it will be parsed as `{'optimizer': <an optimizer config object> }`, which means that the following `optimize_config` dict
 
 ```yaml
 # optimize_config object

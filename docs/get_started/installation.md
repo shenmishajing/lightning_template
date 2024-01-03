@@ -1,6 +1,6 @@
 # Installation
 
-## Automatical installation
+## Automatic installation
 
 ### Install as a package
 

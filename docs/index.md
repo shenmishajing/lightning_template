@@ -113,7 +113,7 @@ tools/cli
 
 ```{toctree}
 :hidden:
-:caption: API Referrences
+:caption: API References
 
 autoapi/lightning_template/index
 ```

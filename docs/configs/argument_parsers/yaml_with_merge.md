@@ -93,7 +93,7 @@ dataset_cfg:
 
 dataset_cfg:
     __import__:
-        # unsuported __import__ keyword not at top level!
+        # unsupported __import__ keyword not at top level!
         # will not be ignored!
         import_train_img_scale_kwargs: &import_train_img_scale_kwargs
             img_scale: !!python/tuple [ 512, 512 ]
@@ -112,12 +112,12 @@ dataset_cfg:
 
 ## All keywords ##
 
-| keyword       | value                                                                                                                                                                                            | effect                                                                                                 |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
-| `__base__`    | `str` or `list[str]` or `list[[str, str]]`,(each `str` should be a relative path from current cofig file, when there are two str, the second one will be the key (using `.` to split) to import) | Merge every config one by one, current last.                                                           |
-| `__import__`  | Any                                                                                                                                                                                              | Just delete this, for convenience of reference in yaml                                                 |
-| `__delete__`  | `True` or `str,int` or `list[str,int]`,`True` for delete all keys from other config, `str,int` only delete the specific key (for dict) or index (for list)                                       | Delete some part of config from other.                                                                 |
-| `change_item` | `list[[index, item]]`,used only when merge list                                                                                                                                                  | Add ability of merg list, change the `list[index]` from other to `item`                                |
-| `insert_item` | `list[[index, item, (extend)]]`,used only when merge list                                                                                                                                        | Add ability of merg list, insert iterm to the `list` at `index`, extend=True if insert a list of items |
-| `pre_item`    | `Any`or `list[Any]`,used only when merge list                                                                                                                                                    | Add ability of merg list, add the value in the start of the list from other to item                    |
-| `post_item`   | `Any`or `list[Any]`,used only when merge list                                                                                                                                                    | Add ability of merg list, add the value in the end of the list from other to item                      |
+| keyword       | value                                                                                                                                                                                             | effect                                                                                                |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `__base__`    | `str` or `list[str]` or `list[[str, str]]`,(each `str` should be a relative path from current config file, when there are two str, the second one will be the key (using `.` to split) to import) | Merge every config one by one, current last.                                                          |
+| `__import__`  | Any                                                                                                                                                                                               | Just delete this, for convenience of reference in yaml                                                |
+| `__delete__`  | `True` or `str,int` or `list[str,int]`,`True` for delete all keys from other config, `str,int` only delete the specific key (for dict) or index (for list)                                        | Delete some part of config from other.                                                                |
+| `change_item` | `list[[index, item]]`,used only when merge list                                                                                                                                                   | Add ability of merg list, change the `list[index]` from other to `item`                               |
+| `insert_item` | `list[[index, item, (extend)]]`,used only when merge list                                                                                                                                         | Add ability of merg list, insert item to the `list` at `index`, extend=True if insert a list of items |
+| `pre_item`    | `Any`or `list[Any]`,used only when merge list                                                                                                                                                     | Add ability of merg list, add the value in the start of the list from other to item                   |
+| `post_item`   | `Any`or `list[Any]`,used only when merge list                                                                                                                                                     | Add ability of merg list, add the value in the end of the list from other to item                     |
