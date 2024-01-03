@@ -1,14 +1,10 @@
 import datetime
 import os
-import sys
 from types import MethodType
 from typing import Any, Callable, Dict, Optional, Tuple, Type, Union
 
-from lightning.pytorch import Trainer
-from lightning.pytorch.cli import ArgsType, LightningArgumentParser
+from lightning.pytorch.cli import LightningArgumentParser, SaveConfigCallback
 from lightning.pytorch.cli import LightningCLI as _LightningCLI
-from lightning.pytorch.cli import Namespace, SaveConfigCallback
-from lightning.pytorch.utilities.rank_zero import rank_zero_warn
 
 from lightning_template.utils.callbacks.save_and_log_config_callback import (
     SaveAndLogConfigCallback,
