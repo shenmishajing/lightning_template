@@ -1,3 +1,9 @@
+## 1.4.4 (2024-01-03)
+
+### Fix
+
+- **changelog**: move changelog.md to docs/get_started
+
 ## 1.4.3 (2024-01-03)
 
 ### Fix
