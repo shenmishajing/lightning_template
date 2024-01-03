@@ -1,1 +1,1 @@
-from .kfold import KFoldLoop
+from .kfold import KFoldLoop as KFoldLoop

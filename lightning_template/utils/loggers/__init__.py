@@ -1,1 +1,1 @@
-from .wandb import WandbNamedLogger
+from .wandb import WandbNamedLogger as WandbNamedLogger
