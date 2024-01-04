@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.8 (2024-01-04)
+
+### Fix
+
+- **ci**: fix fetch depth = 0 bug in check pre commit hooks
+
 ## 1.4.7 (2024-01-03)
 
 ### Fix
