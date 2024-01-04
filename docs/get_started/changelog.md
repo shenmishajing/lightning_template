@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.9 (2024-01-04)
+
+### Fix
+
+- **ci**: fix publish twice on tagged commit bug
+- **ci**: fix check commit messages protect master br bug
+
 ## 1.4.8 (2024-01-04)
 
 ### Fix
