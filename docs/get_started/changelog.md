@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.10 (2024-01-04)
+
+### Fix
+
+- **ci**: add write permission to contents for release ci
+
 ## 1.4.9 (2024-01-04)
 
 ### Fix
