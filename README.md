@@ -12,7 +12,7 @@
 [![Google Style](https://img.shields.io/badge/%20style-google-3666d6.svg)](https://google.github.io/styleguide/pyguide.html#s3.8-comments-and-docstrings)
 [![codecov.io](https://img.shields.io/codecov/c/github/shenmishajing/lightning_template.svg)](https://codecov.io/github/shenmishajing/lightning_template?branch=master)
 [![Contributors](https://img.shields.io/github/contributors/shenmishajing/lightning_template.svg)](https://github.com/shenmishajing/lightning_template/graphs/contributors)
-[![Publish status](https://github.com/shenmishajing/lightning_template/actions/workflows/publish.yml/badge.svg)](https://github.com/shenmishajing/lightning_template/actions/workflows/publish.yml)
+[![Publish status](https://github.com/shenmishajing/lightning_template/actions/workflows/release.yml/badge.svg)](https://github.com/shenmishajing/lightning_template/actions/workflows/release.yml)
 [![pre_commit_hooks status](https://github.com/shenmishajing/lightning_template/actions/workflows/check_pre_commit_hooks.yml/badge.svg)](https://github.com/shenmishajing/lightning_template/actions/workflows/check_pre_commit_hooks.yml)
 [![commit_messages status](https://github.com/shenmishajing/lightning_template/actions/workflows/check_commit_messages.yml/badge.svg)](https://github.com/shenmishajing/lightning_template/actions/workflows/check_commit_messages.yml)
 
