@@ -14,7 +14,7 @@ pre-commit install
 Install the required dependencies for building documents.
 
 ```bash
-pip install -e ".[docs]"
+pip install -e ".[doc]"
 ```
 
 Launch the live server for building and previewing documents.
