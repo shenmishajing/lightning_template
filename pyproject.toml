@@ -44,7 +44,8 @@ doc = [
     "sphinx_design",
 ]
 build = ["build"]
-all = ["lightning-template[optional,dev,doc,build]"]
+test = ["tox", "pytest", "pytest-cov"]
+all = ["lightning-template[optional,dev,doc,build,test]"]
 
 [project.urls]
 Homepage = "https://github.com/shenmishajing/lightning_template"
@@ -62,6 +63,19 @@ model_statistics = "lightning_template.tools.model.model_statistics:main"
 [tool.setuptools_scm]
 version_file = "lightning_template/version.py"
 local_scheme = "dirty-tag"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-q --doctest-modules --doctest-glob='*.md' --doctest-continue-on-failure"
+testpaths = ["tests", "docs"]
+
+[tool.coverage]
+[tool.coverage.run]
+omit = ['__init__.py', 'tests/*', 'docs/*', '.venv/*']
+
+[tool.coverage.report]
+skip_empty = true
+skip_covered = true
 
 [tool.commitizen]
 name = "cz_conventional_commits"
