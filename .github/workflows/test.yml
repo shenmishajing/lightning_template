@@ -42,4 +42,5 @@ jobs:
       - name: Upload coverage reports to Codecov with GitHub Action
         uses: codecov/codecov-action@v3
         with:
-          flags: ${{ matrix.os }}, ${{ matrix.py }}
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: ${{ matrix.os }}-py${{ matrix.py }}
