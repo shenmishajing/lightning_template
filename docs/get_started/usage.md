@@ -21,11 +21,3 @@ You can get some examples from [project_template](https://github.com/shenmishaji
 ## CLI
 
 This project is based on the [lightning CLI](https://pytorch-lightning.readthedocs.io/en/stable/cli/lightning_cli.html), so it supports all features from [pytorch lightning](https://pytorch-lightning.readthedocs.io/en/stable/) and [lightning CLI](https://pytorch-lightning.readthedocs.io/en/stable/cli/lightning_cli.html), you can get a brief introduction from [cli doc](../tools/cli.md).
-
-### Speed Benchmark
-
-See [speed-benchmark lib](https://github.com/shenmishajing/speed_benchmark)
-
-### Shell Command Launcher
-
-See [shell-command-launcher lib](https://github.com/shenmishajing/shell_command_launcher)

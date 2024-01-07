@@ -9,8 +9,6 @@ Lightning Template is a generic project template lib based on [pytorch lightning
 - Hyperparameters tuning via Wandb, see the [doc](configs/argument_parsers/json_file.md) and [wandb sweep](https://docs.wandb.ai/guides/sweeps).
 - Powerful and flexible LightningModule and LightningDataModule base class.
 - Useful auto lr finder and auto batch size scaler, see [doc](tools/cli.md).
-- Useful tools to compare the speed of different models, see [speed-benchmark lib](https://github.com/shenmishajing/speed_benchmark)
-- Useful command line scripts launcher, see [shell-command-launcher lib](https://github.com/shenmishajing/shell_command_launcher)
 
 ````{grid} 2
 :gutter: 3
