@@ -10,7 +10,7 @@ We recommend you use the latest version of Python, which works well generally an
 
 ### Pytorch
 
-Install [Pytorch](https://pytorch.org/get-started/locally/) from their official site manually. You have to choose the version of Pytorch based on the cuda version on your machine. Similarly, we recommend you use the latest version of Pytorch, which works well generally and may provide a better performance. You can skip installing the Pytorch manually in this section if you want to use the latest Pytorch since the `pip` will install it in the next section. The minimum supported version of Pytorch is `1.11`.
+Install [Pytorch](https://pytorch.org/get-started/locally/) from their official site manually. You have to choose the version of Pytorch based on the cuda version on your machine. Similarly, we recommend you use the latest version of Pytorch, which works well generally and may provide a better performance. You can skip this step if it's fine to use the latest version of Pytorch and the `pip` will install it in the next section. The minimum supported version of Pytorch is `1.11`.
 
 ## Automatic installation
 
