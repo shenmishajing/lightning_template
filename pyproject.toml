@@ -69,7 +69,7 @@ testpaths = ["tests", "docs"]
 
 [tool.coverage]
 [tool.coverage.run]
-omit = ['__init__.py', 'tests/*', 'docs/*', '.venv/*']
+omit = ['__init__.py', 'version.py', 'tests/*', 'docs/*', '.venv/*']
 
 [tool.coverage.report]
 skip_empty = true
