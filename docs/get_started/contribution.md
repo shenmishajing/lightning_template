@@ -2,9 +2,13 @@
 
 ## Development
 
+Install this project, the required dependencies and the pre-commit hooks for development.
+
+```note
+You have to clone this project first and run the following commands in the root folder of this project.
+```
+
 ```bash
-git clone https://github.com/shenmishajing/lightning_template.git
-cd lightning_template
 pip install -e ".[dev]"
 pre-commit install
 ```
