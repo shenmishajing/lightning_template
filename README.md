@@ -15,6 +15,7 @@
 [![Publish status](https://github.com/shenmishajing/lightning_template/actions/workflows/release.yml/badge.svg)](https://github.com/shenmishajing/lightning_template/actions/workflows/release.yml)
 [![pre_commit_hooks status](https://github.com/shenmishajing/lightning_template/actions/workflows/check_pre_commit_hooks.yml/badge.svg)](https://github.com/shenmishajing/lightning_template/actions/workflows/check_pre_commit_hooks.yml)
 [![Pytest status](https://github.com/shenmishajing/lightning_template/actions/workflows/test.yml/badge.svg)](https://github.com/shenmishajing/lightning_template/actions/workflows/test.yml)
+[![Documentation Status](https://readthedocs.org/projects/lightning-template/badge/?version=latest)](https://lightning-template.readthedocs.io/en/latest/?badge=latest)
 
 [📘Documentation](https://lightning-template.readthedocs.io) |
 [🛠️Installation](https://lightning-template.readthedocs.io/en/latest/get_started/installation.html) |
