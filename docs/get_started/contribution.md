@@ -39,6 +39,32 @@ python -m build
 
 See the github action workflow file [python-publish.yml](https://github.com/shenmishajing/lightning_template/blob/master/.github/workflows/python-publish.yml) for details.
 
+### Unit Tests
+
+Install the required dependencies to run unit tests.
+
+```bash
+pip install -e ".[test]"
+```
+
+#### Run the unit tests.
+
+```bash
+pytest
+```
+
+#### Run the unit tests with coverage.
+
+```bash
+pytest --cov=.
+```
+
+#### Run the unit tests with various python version.
+
+```bash
+tox -- --cov=.
+```
+
 ## Code Style and Git Hooks
 
 The code is formatted and linted by [ruff](https://github.com/astral-sh/ruff). The docstring is in [Google style](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html) and formatted by [docformatter](https://github.com/PyCQA/docformatter). The spelling is checked by [codespell](https://github.com/codespell-project/codespell). All commit messages should follow the [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/) style to generate the changelog and semantic version automatically.
@@ -55,4 +81,4 @@ Fortunately, the [commitizen](https://github.com/commitizen-tools/commitizen) ca
 - Make changes.
 - Commit changes. Then you can use `cz commit` to commit your changes. It will guide you to write the commit message in the [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/) style.
 - Bump version (Optional). If you have made some commits related to codes with `feat`, `fix`, `refactor`, `perf` or `BREAKING CHANGE` category, you can use `cz bump` to bump the version and generate the changelog automatically.
-- Push changes. Then you can push your changes to the remote repo. If you have bumped the version, you should push the tags to the remote repo by `git push --tags`.
+- Push changes. Then you can push your changes to the remote repo. If you have bumped the version, you should push the tags to the remote repo by `git push --tags`. If you are using the [vscode](https://code.visualstudio.com/), you can set `git.followTagsWhenSync` to `true` to automatically push the tags when you run the sync command.
