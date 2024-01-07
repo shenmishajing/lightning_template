@@ -37,8 +37,6 @@ Build the package.
 python -m build
 ```
 
-See the github action workflow file [python-publish.yml](https://github.com/shenmishajing/lightning_template/blob/master/.github/workflows/python-publish.yml) for details.
-
 ### Unit Tests
 
 Install the required dependencies to run unit tests.
@@ -69,7 +67,7 @@ tox -- --cov=.
 
 The code is formatted and linted by [ruff](https://github.com/astral-sh/ruff). The docstring is in [Google style](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html) and formatted by [docformatter](https://github.com/PyCQA/docformatter). The spelling is checked by [codespell](https://github.com/codespell-project/codespell). All commit messages should follow the [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/) style to generate the changelog and semantic version automatically.
 
-All the above requirements are checked by [pre-commit](https://pre-commit.com/) hooks. You can install them by `pre-commit install` after you clone the repo. See the [pre-commit config file](https://github.com/shenmishajing/lightning_template/blob/main/.pre-commit-config.yaml) for details.
+All the above requirements are checked by [pre-commit](https://pre-commit.com/) hooks. You can install them by `pre-commit install` after you clone the repo.
 
 ## Version, Tag and Release
 
