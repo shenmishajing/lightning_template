@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.11 (2024-01-10)
+
+### Fix
+
+- **ActionJsonFile**: fix multi ActionConfigFile bug
+- **LightningModule**: fix recursive_parse_modules is not staticmethod bug
+
 ## 1.4.10 (2024-01-04)
 
 ### Fix
