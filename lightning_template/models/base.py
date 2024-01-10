@@ -211,7 +211,9 @@ class LightningModule(SplitNameMixin, _LightningModule):
         # log
         self.log_dict(
             self.flatten_dict(log_dict, split),
-            batch_size=output.get("batch_size", None),
+            batch_size=output.get("batch_size", None)
+            if isinstance(output, Mapping)
+            else None,
             sync_dist=split != self.TrainSplit,
         )
 
