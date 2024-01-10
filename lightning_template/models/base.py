@@ -57,16 +57,17 @@ class LightningModule(SplitNameMixin, _LightningModule):
                     self.on_load_checkpoint(checkpoint)
                     self.load_state_dict(checkpoint["state_dict"], strict=False)
 
-    def recursive_parse_modules(self, module):
+    @staticmethod
+    def recursive_parse_modules(module):
         modules = []
         if isinstance(module, torch.nn.Module):
             modules.append(module)
         elif isinstance(module, list):
             for m in module:
-                modules.extend(self.recursive_parse_modules(m))
+                modules.extend(LightningModule.recursive_parse_modules(m))
         elif isinstance(module, dict):
             for m in module.values():
-                modules.extend(self.recursive_parse_modules(m))
+                modules.extend(LightningModule.recursive_parse_modules(m))
         return modules
 
     def _build_evaluator(self, split):
