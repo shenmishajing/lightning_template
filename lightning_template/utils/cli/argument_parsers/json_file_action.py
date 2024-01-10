@@ -1,21 +1,22 @@
 import json
+from argparse import Action
 from typing import List, Optional
 
-from jsonargparse import ActionConfigFile, Path, get_config_read_mode
+from jsonargparse import LoggerProperty, Path, get_config_read_mode
 
 
-class ActionJsonFile(ActionConfigFile):
+class ActionJsonFile(LoggerProperty, Action):
     """Action to indicate that an argument is a configuration file or a configuration
     string in json format."""
 
-    @staticmethod
-    def apply_config(parser, cfg, dest, value) -> None:
+    def __call__(self, parser, cfg, values, option_string=None):
         try:
-            cfg_path: Optional[Path] = Path(value, mode=get_config_read_mode())
-            value = cfg_path.get_content()
+            values = Optional[Path] = Path(
+                values, mode=get_config_read_mode()
+            ).get_content()
         except TypeError:
             pass
-        cfg_file = json.loads(value)
+        cfg_file = json.loads(values)
         for key, value in cfg_file.items():
             *prefix_keys, last_key = key.split("/")
             cur_cfg = cfg
