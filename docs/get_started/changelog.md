@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.12 (2024-01-10)
+
+### Fix
+
+- **LightningModule**: fix output is not dict bug
+
 ## 1.4.11 (2024-01-10)
 
 ### Fix
