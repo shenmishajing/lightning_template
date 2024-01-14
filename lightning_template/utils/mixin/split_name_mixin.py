@@ -1,5 +1,6 @@
 import copy
 import string
+from collections import OrderedDict
 from typing import List, Mapping
 
 from ..cli.argument_parsers import deep_update
@@ -11,21 +12,15 @@ class SplitNameMixin:
     TestSplit = "test"
     PredictSplit = "predict"
 
-    SplitNameMap = {
-        TrainSplit: "train",
-        ValidateSplit: "val",
-        TestSplit: "val",
-        PredictSplit: "val",
-    }
+    SplitNameMap = OrderedDict()
+    SplitNameMap[TrainSplit] = "train"
+    SplitNameMap[ValidateSplit] = "val"
+    SplitNameMap[TestSplit] = "val"
+    SplitNameMap[PredictSplit] = "val"
 
     def __init__(self) -> None:
         super().__init__()
-        self.split_names = [
-            self.TrainSplit,
-            self.ValidateSplit,
-            self.TestSplit,
-            self.PredictSplit,
-        ]
+        self.split_names = list(self.SplitNameMap.keys())
 
     def _get_split_names(self, stage=None):
         if self.trainer.overfit_batches > 0:
