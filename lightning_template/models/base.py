@@ -144,19 +144,22 @@ class LightningModule(SplitNameMixin, _LightningModule):
             return output["metric_dict"]
         elif self.model is not None and hasattr(self.model, "metric_step"):
             return self.model.metric_step(batch, output)
-        return output
+        return None
 
     def metric_step(self, *args, dataloader_idx=None, split, **kwargs):
         if self.evaluators[split]:
             metrics = self._metric_step(
                 dataloader_idx=dataloader_idx, split=split, *args, **kwargs
             )
-            if dataloader_idx is not None and isinstance(
-                self.evaluators[split], (list, torch.nn.ModuleList)
-            ):
-                self.update_evaluator(self.evaluators[split][dataloader_idx], **metrics)
-            else:
-                self.update_evaluator(self.evaluators[split], **metrics)
+            if metrics is not None:
+                if dataloader_idx is not None and isinstance(
+                    self.evaluators[split], (list, torch.nn.ModuleList)
+                ):
+                    self.update_evaluator(
+                        self.evaluators[split][dataloader_idx], **metrics
+                    )
+                else:
+                    self.update_evaluator(self.evaluators[split], **metrics)
 
     def _compute_evaluator(self, evaluator, *args, **kwargs):
         result = evaluator.compute()
