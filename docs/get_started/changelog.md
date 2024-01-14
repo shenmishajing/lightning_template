@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.5.0 (2024-01-14)
+
+### Feat
+
+- **eval-metrics**: only update evaluators when metric dicts is set explicitly
+- **split-name**: add feature to customize split names
+
 ## 1.4.12 (2024-01-10)
 
 ### Fix
