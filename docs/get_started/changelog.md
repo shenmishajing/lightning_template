@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.1 (2024-01-15)
+
+### Fix
+
+- **log-code**: fix log code include files bug for wandb logger
+
 ## 1.5.0 (2024-01-14)
 
 ### Feat
