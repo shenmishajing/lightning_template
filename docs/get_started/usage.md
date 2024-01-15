@@ -21,3 +21,16 @@ You can get some examples from [project_template](https://github.com/shenmishaji
 ## CLI
 
 This project is based on the [lightning CLI](https://pytorch-lightning.readthedocs.io/en/stable/cli/lightning_cli.html), so it supports all features from [pytorch lightning](https://pytorch-lightning.readthedocs.io/en/stable/) and [lightning CLI](https://pytorch-lightning.readthedocs.io/en/stable/cli/lightning_cli.html), you can get a brief introduction from [cli doc](../tools/cli.md).
+
+## Wandb Logger
+
+We support logging your code with `WandbNamedLogger` to control the version of your codes for every experiment. To use `Wandb`, you have to create an account on their [site](https://wandb.ai/) and login following their [doc](https://docs.wandb.ai/quickstart). We recommend you symlink every file you want to log under the `code_dirs` folder of your project since `WandbNamedLogger` has to walk through that folder to find the files you want to log. You can use the following command to do that:
+
+```bash
+mkdir code_dirs
+cd code_dirs
+ln -s ../* ../.* .
+cd ..
+```
+
+Note that you should run this command in the root folder of your project after you clone this project and you have to symlink any new files and folders you want to log to wandb manually after that. You should not link any files or folders you don't want to log under the `code_dirs` folder. If you do not create the `code_dirs` folder, `WandbNamedLogger` will walk through the root folder of your project to find the files you want to log, which will be slow, especially if you put your datasets with too many files and folders in your project. Therefore, we recommend you use the above commands to create the `code_dirs` folder.
