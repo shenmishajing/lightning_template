@@ -43,7 +43,7 @@ class RichProgressBar(_RichProgressBar):
         ):
             during_time = time.time() - self.start_time
             time_sec_avg = during_time / (
-                (self.trainer.current_epoch - self.start_epoch)
+                max(self.trainer.current_epoch - self.start_epoch, 1)
                 * self.total_train_batches
                 + self.train_progress_bar.completed
             )
