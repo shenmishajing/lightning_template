@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.3 (2024-01-16)
+
+### Fix
+
+- **modelcheckpoint**: fix link bug for best checkpoint
+
 ## 1.5.2 (2024-01-16)
 
 ### Fix
