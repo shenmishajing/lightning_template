@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.2 (2024-01-16)
+
+### Fix
+
+- **progress**: fix divide zero bug
+
 ## 1.5.1 (2024-01-15)
 
 ### Fix
