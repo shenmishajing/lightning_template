@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.4 (2024-01-16)
+
+### Refactor
+
+- **SaveAndLogConfigCallback**: move log_hyperparams to save_config func
+
 ## 1.5.3 (2024-01-16)
 
 ### Fix
