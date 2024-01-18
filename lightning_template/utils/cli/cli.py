@@ -74,12 +74,6 @@ class LightningCLI(_LightningCLI):
         ):
             if config["trainer"]["logger"].get("init_args") is None:
                 config["trainer"]["logger"]["init_args"] = {}
-            save_dir = config["trainer"]["logger"]["init_args"].get("save_dir")
-            save_dir = os.path.join(
-                save_dir if save_dir else "work_dirs", name, version
-            )
-            os.makedirs(save_dir, exist_ok=True)
-            config["trainer"]["logger"]["init_args"]["save_dir"] = save_dir
             for k, v in {"name": name, "version": version}.items():
                 if config["trainer"]["logger"]["init_args"].get(k) is None:
                     config["trainer"]["logger"]["init_args"][k] = v
