@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.5.5 (2024-01-18)
+
+### Fix
+
+- **wandb-log-code**: fix use code_dir does not follow link bug, use glob instead of walk
+
+### Refactor
+
+- **log_dir**: do not set log_dir in before_instantiate_classes
+
 ## 1.5.4 (2024-01-16)
 
 ### Refactor
