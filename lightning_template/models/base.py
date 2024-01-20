@@ -123,13 +123,13 @@ class LightningModule(SplitNameMixin, _LightningModule):
 
     def loss_step(self, *args, use_loss_weight=True, **kwargs):
         loss = self._loss_step(*args, **kwargs)
-        # multi loss weights
+        # multiply loss weights
         if use_loss_weight and self.loss_weights:
             loss = {
                 k: v * (1 if k not in self.loss_weights else self.loss_weights[k])
                 for k, v in loss.items()
             }
-        # calculate loss
+        # calculate loss if necessary
         if "loss" not in loss:
             loss["loss"] = torch.sum(
                 torch.stack([v for k, v in loss.items() if "loss" in k])
