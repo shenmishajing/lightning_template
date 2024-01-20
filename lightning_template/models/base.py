@@ -112,13 +112,13 @@ class LightningModule(SplitNameMixin, _LightningModule):
     def forward(self, batch, *args, **kwargs):
         return self.model(batch)
 
-    def _loss_step(self, batch, *args, output, **kwargs):
+    def _loss_step(self, *args, output, **kwargs):
         if not isinstance(output, Mapping):
             return {"loss": output}
         elif "loss_dict" in output:
             return output["loss_dict"]
         elif self.model is not None and hasattr(self.model, "loss_step"):
-            return self.model.loss_step(batch, output)
+            return self.model.loss_step(*args, output=output, **kwargs)
         return output
 
     def loss_step(self, *args, use_loss_weight=True, **kwargs):
@@ -139,11 +139,11 @@ class LightningModule(SplitNameMixin, _LightningModule):
     def update_evaluator(self, evaluator, *args, **kwargs):
         evaluator.update(*args, **kwargs)
 
-    def _metric_step(self, batch, *args, output, **kwargs):
+    def _metric_step(self, *args, output, **kwargs):
         if isinstance(output, Mapping) and "metric_dict" in output:
             return output["metric_dict"]
         elif self.model is not None and hasattr(self.model, "metric_step"):
-            return self.model.metric_step(batch, output)
+            return self.model.metric_step(*args, output, **kwargs)
         return None
 
     def metric_step(self, *args, dataloader_idx=None, split, **kwargs):
