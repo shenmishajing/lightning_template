@@ -136,7 +136,9 @@ class LightningModule(SplitNameMixin, _LightningModule):
             )
         return loss
 
-    def update_evaluator(self, evaluator, *args, **kwargs):
+    def update_evaluator(
+        self, evaluator, *args, dataloader_idx=None, split=None, **kwargs
+    ):
         evaluator.update(*args, **kwargs)
 
     def _metric_step(self, *args, output, **kwargs):
@@ -156,10 +158,18 @@ class LightningModule(SplitNameMixin, _LightningModule):
                     self.evaluators[split], (list, torch.nn.ModuleList)
                 ):
                     self.update_evaluator(
-                        self.evaluators[split][dataloader_idx], **metrics
+                        self.evaluators[split][dataloader_idx],
+                        dataloader_idx=dataloader_idx,
+                        split=split,
+                        **metrics,
                     )
                 else:
-                    self.update_evaluator(self.evaluators[split], **metrics)
+                    self.update_evaluator(
+                        self.evaluators[split],
+                        dataloader_idx=dataloader_idx,
+                        split=split,
+                        **metrics,
+                    )
 
     def _compute_evaluator(self, evaluator, *args, **kwargs):
         result = evaluator.compute()
