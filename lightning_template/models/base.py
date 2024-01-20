@@ -223,7 +223,7 @@ class LightningModule(SplitNameMixin, _LightningModule):
         # return loss
         return log_dict
 
-    def on_forward_epoch_end(self, split, *args, **kwargs):
+    def on_forward_epoch_end(self, *args, split, **kwargs):
         log_dict = self.on_metric_epoch_end(split=split, *args, **kwargs)
 
         if log_dict:
