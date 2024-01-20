@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.6.0 (2024-01-20)
+
+### Feat
+
+- **update_evaluator**: add split arg for update_evaluator func
+
+### Fix
+
+- **model.loss_step**: use the same interface for model func
+- **on_forward_epoch_end**: fix arg order bug
+
 ## 1.5.5 (2024-01-18)
 
 ### Fix
