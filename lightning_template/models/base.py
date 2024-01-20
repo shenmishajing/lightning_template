@@ -201,10 +201,10 @@ class LightningModule(SplitNameMixin, _LightningModule):
 
     def forward_step(self, *args, split, **kwargs):
         # forward
-        output = self(*args, split=split, **kwargs)
+        output = self(split=split, *args, **kwargs)
 
         # loss
-        log_dict = self.loss_step(output=output, *args, split=split, **kwargs)
+        log_dict = self.loss_step(output=output, split=split, *args, **kwargs)
 
         # metrics
         metrics = self.metric_step(output=output, split=split, *args, **kwargs)
