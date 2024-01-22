@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.1 (2024-01-22)
+
+### Fix
+
+- **checkpoint**: fix do not save last checkpoint if it is not topk best checkpoint
+
 ## 1.6.0 (2024-01-20)
 
 ### Feat
