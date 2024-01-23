@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.3 (2024-01-23)
+
+### Fix
+
+- **SetWandbLoggerCallback**: fix root_dir bug
+
 ## 1.6.2 (2024-01-23)
 
 ### Fix
