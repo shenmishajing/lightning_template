@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.2 (2024-01-23)
+
+### Fix
+
+- **SetWandbLoggerCallback**: fix SetWandbLoggerCallback does not support 3.8-3.10 bug
+
 ## 1.6.1 (2024-01-22)
 
 ### Fix
