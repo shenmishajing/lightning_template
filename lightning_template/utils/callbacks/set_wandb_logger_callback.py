@@ -70,15 +70,10 @@ class SetWandbLoggerCallback(Callback):
         for glob_pattern in self.log_code_cfg["include_patterns"]:
             glob_params = {}
             if self.log_code_cfg.get("root") is not None:
-                glob_params["root"] = self.log_code_cfg["root"]
+                glob_params["root_dir"] = self.log_code_cfg["root"]
             if version_info >= (3, 11):
                 glob_params["include_hidden"] = True
-            for file_path in iglob(
-                glob_pattern,
-                root_dir=self.log_code_cfg.get("root"),
-                recursive=True,
-                **glob_params,
-            ):
+            for file_path in iglob(glob_pattern, recursive=True, **glob_params):
                 if not self.log_code_cfg["exclude_fn"](file_path):
                     files_added = True
                     save_name = (
