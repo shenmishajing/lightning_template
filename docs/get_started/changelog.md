@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.4 (2024-01-23)
+
+### Refactor
+
+- **update_evaluator**: add metrics param to update_evaluator
+
 ## 1.6.3 (2024-01-23)
 
 ### Fix
