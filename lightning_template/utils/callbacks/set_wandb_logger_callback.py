@@ -2,12 +2,12 @@ import os
 import re
 from functools import partial
 from glob import iglob
+from sys import version_info
 from typing import Optional, Union
 
+import wandb
 from lightning.pytorch import Callback, LightningModule, Trainer
 from lightning.pytorch.loggers.wandb import WandbLogger
-
-import wandb
 
 
 class SetWandbLoggerCallback(Callback):
@@ -68,11 +68,16 @@ class SetWandbLoggerCallback(Callback):
         art = wandb.Artifact(self.log_code_cfg["name"], "code")
         files_added = False
         for glob_pattern in self.log_code_cfg["include_patterns"]:
+            glob_params = {}
+            if self.log_code_cfg.get("root") is not None:
+                glob_params["root"] = self.log_code_cfg["root"]
+            if version_info >= (3, 11):
+                glob_params["include_hidden"] = True
             for file_path in iglob(
                 glob_pattern,
                 root_dir=self.log_code_cfg.get("root"),
-                include_hidden=True,
                 recursive=True,
+                **glob_params,
             ):
                 if not self.log_code_cfg["exclude_fn"](file_path):
                     files_added = True
