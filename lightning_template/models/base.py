@@ -136,10 +136,8 @@ class LightningModule(SplitNameMixin, _LightningModule):
             )
         return loss
 
-    def update_evaluator(
-        self, evaluator, *args, dataloader_idx=None, split=None, **kwargs
-    ):
-        evaluator.update(*args, **kwargs)
+    def update_evaluator(self, evaluator, *args, metrics, **kwargs):
+        evaluator.update(**metrics)
 
     def _metric_step(self, *args, output, **kwargs):
         if isinstance(output, Mapping) and "metric_dict" in output:
@@ -159,16 +157,20 @@ class LightningModule(SplitNameMixin, _LightningModule):
                 ):
                     self.update_evaluator(
                         self.evaluators[split][dataloader_idx],
+                        *args,
+                        metrics=metrics,
                         dataloader_idx=dataloader_idx,
                         split=split,
-                        **metrics,
+                        **kwargs,
                     )
                 else:
                     self.update_evaluator(
                         self.evaluators[split],
+                        *args,
+                        metrics=metrics,
                         dataloader_idx=dataloader_idx,
                         split=split,
-                        **metrics,
+                        **kwargs,
                     )
 
     def _compute_evaluator(self, evaluator, *args, **kwargs):
