@@ -77,10 +77,6 @@ class SplitNameMixin:
                 for name in self.split_names:
                     if last_config is None:
                         res[name] = config[name]
-                        if isinstance(res[name], List):
-                            last_config = res[name][0]
-                        else:
-                            last_config = res[name]
                     else:
                         if isinstance(config.get(name, {}), List):
                             res[name] = []
@@ -91,11 +87,15 @@ class SplitNameMixin:
                                     )
                                 )
                                 last_config = res[name][i]
-                            last_config = res[name][0]
                         else:
                             res[name] = deep_update(
                                 copy.deepcopy(last_config), config.get(name, {})
                             )
+
+                    if isinstance(res[name], List):
+                        last_config = res[name][0]
+                    else:
+                        last_config = res[name]
 
                 if "split_info" in config and "split_format_to" in config["split_info"]:
                     config = config["split_info"]
