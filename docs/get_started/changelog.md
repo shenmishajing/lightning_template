@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.6.5 (2024-01-26)
+
+### Fix
+
+- **get_cfg_from_path**: fix get_cfg_from_path change dir bug
+- **get_split_config**: fix get_split_config last config bug
+
 ## 1.6.4 (2024-01-23)
 
 ### Refactor
