@@ -1,50 +1,12 @@
 import copy
 import os
 import re
-from contextlib import contextmanager
-from contextvars import ContextVar
-from typing import Iterator, Optional, Union
 
 import yaml
 from jsonargparse import Path, get_config_read_mode, set_dumper, set_loader
 from yaml.constructor import FullConstructor
 
 from .deep_update import deep_update
-
-current_path_dir: ContextVar[Optional[str]] = ContextVar(
-    "current_path_dir", default=None
-)
-
-
-@contextmanager
-def change_to_path_dir(path: Optional["Path"]) -> Iterator[Optional[str]]:
-    """A context manager for running code in the directory of a path."""
-    path_dir = current_path_dir.get()
-    chdir: Union[bool, str] = False
-    if path is not None:
-        if path._url_data and (path.is_url or path.is_fsspec):
-            scheme = path._url_data.scheme
-            path_dir = path._url_data.url_path
-        else:
-            scheme = ""
-            path_dir = path.absolute
-            chdir = True
-        if "d" not in path.mode:
-            path_dir = os.path.dirname(path_dir)
-        path_dir = scheme + path_dir
-
-    token = current_path_dir.set(path_dir)
-    if chdir and path_dir:
-        chdir = os.getcwd()
-        path_dir = os.path.abspath(path_dir)
-        os.chdir(path_dir)
-
-    try:
-        yield path_dir
-    finally:
-        current_path_dir.reset(token)
-        if chdir:
-            os.chdir(chdir)
 
 
 class DefaultLoader(getattr(yaml, "CSafeLoader", yaml.SafeLoader)):  # type: ignore
@@ -103,9 +65,8 @@ def yaml_load(stream):
 
 def get_cfg_from_path(cfg_path):
     fpath = Path(cfg_path, mode=get_config_read_mode())
-    with change_to_path_dir(fpath):
-        cfg_str = fpath.get_content()
-        parsed_cfg = yaml_load(cfg_str)
+    cfg_str = fpath.get_content()
+    parsed_cfg = yaml_load(cfg_str)
     return parsed_cfg
 
 
