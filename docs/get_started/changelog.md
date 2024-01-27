@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.6 (2024-01-27)
+
+### Fix
+
+- **predict_path**: fix hardcode predict_path bug
+
 ## 1.6.5 (2024-01-26)
 
 ### Fix
