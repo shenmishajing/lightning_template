@@ -15,11 +15,11 @@ class LightningModule(SplitNameMixin, _LightningModule):
         self,
         model: Optional[torch.nn.Module] = None,
         ckpt_path: Optional[Union[str, List[str]]] = None,
-        evaluator_cfg: dict = None,
+        evaluator_cfg: Mapping = None,
         evaluator_as_submodule: bool = True,
         loss_weights=None,
-        predict_tasks=None,
-        predict_path=None,
+        predict_tasks: Optional[List[str]] = None,
+        predict_path: str = "prediction",
         *args,
         **kwargs,
     ) -> None:
@@ -43,7 +43,8 @@ class LightningModule(SplitNameMixin, _LightningModule):
         for task in predict_tasks:
             assert hasattr(self, "predict_" + task), f"task {task} is not supported!"
 
-        self.predict_tasks = {task: predict_path for task in predict_tasks}
+        self.predict_tasks = predict_tasks
+        self.predict_path = predict_path
 
         # leave for auto lr finder
         self.lr = None
@@ -292,31 +293,25 @@ class LightningModule(SplitNameMixin, _LightningModule):
             shutil.rmtree(path)
         os.makedirs(path, exist_ok=True)
 
-    def on_predict_epoch_start(self) -> None:
+    def on_predict_start(self) -> None:
         if self.trainer.ckpt_path:
-            output_path = os.path.join(
+            self.predict_path = os.path.join(
                 os.path.dirname(os.path.dirname(self.trainer.ckpt_path)),
-                "visualization",
+                self.predict_path,
             )
-        else:
-            output_path = None
 
         for name in self.predict_tasks:
-            if self.predict_tasks[name] is None:
-                if output_path is None:
-                    raise ValueError(
-                        "predict_path is None, please set predict_path or pass ckpt_path"
-                    )
-
-                self.predict_tasks[name] = output_path
-
-            self.predict_tasks[name] = os.path.join(self.predict_tasks[name], name)
-            self.rm_and_create(self.predict_tasks[name])
+            self.rm_and_create(os.path.join(self.predict_path, name))
 
     def predict_forward(self, *args, **kwargs):
         return {}
 
     def predict_step(self, *args, **kwargs):
         res = self.predict_forward(*args, **kwargs)
-        for name, path in self.predict_tasks.items():
-            getattr(self, "predict_" + name)(output_path=path, *args, **kwargs, **res)
+        for name in self.predict_tasks:
+            getattr(self, "predict_" + name)(
+                output_path=os.path.join(self.predict_path, name),
+                *args,
+                **kwargs,
+                **res,
+            )
