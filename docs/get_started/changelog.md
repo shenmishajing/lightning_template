@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.7.0 (2024-02-13)
+
+### Feat
+
+- **seed**: add auto generate random seed if seed_everything is True or None
+- **save_dir**: add auto create save dir for logger feature
+
 ## 1.6.6 (2024-01-27)
 
 ### Fix
