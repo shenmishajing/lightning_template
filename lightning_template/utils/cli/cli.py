@@ -1,8 +1,10 @@
 import datetime
 import os
+import random
 from types import MethodType
 from typing import Any, Callable, Dict, Optional, Tuple, Type, Union
 
+import numpy as np
 from lightning.pytorch.cli import LightningArgumentParser, SaveConfigCallback
 from lightning.pytorch.cli import LightningCLI as _LightningCLI
 
@@ -57,6 +59,20 @@ class LightningCLI(_LightningCLI):
             default=None,
             help="Configuration for the optimizers and lr schedulers.",
         )
+
+    def _set_seed(self) -> None:
+        """Sets the seed."""
+        config_seed = self._get(self.config, "seed_everything")
+        if config_seed is True or config_seed is None:
+            # user requested seeding, choose randomly
+            config_seed = random.randint(
+                np.iinfo(np.uint32).min, np.iinfo(np.uint32).max
+            )
+            if self.subcommand:
+                self.config[self.subcommand]["seed_everything"] = config_seed
+            else:
+                self.config["seed_everything"] = config_seed
+        return super()._set_seed()
 
     def before_instantiate_classes(self) -> None:
         """Implement to run some code before instantiating the classes."""
