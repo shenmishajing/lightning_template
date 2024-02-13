@@ -78,6 +78,11 @@ class LightningCLI(_LightningCLI):
                 if config["trainer"]["logger"]["init_args"].get(k) is None:
                     config["trainer"]["logger"]["init_args"][k] = v
 
+            if config["trainer"]["logger"]["init_args"].get("save_dir") is not None:
+                os.makedirs(
+                    config["trainer"]["logger"]["init_args"]["save_dir"], exist_ok=True
+                )
+
             if (
                 "subcommand" in self.config
                 and self.config["subcommand"] != "fit"
