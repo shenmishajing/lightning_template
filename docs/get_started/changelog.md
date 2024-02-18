@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.7.2 (2024-02-18)
+
+### Fix
+
+- **random-seed**: fix random seed is different for each rank bug
+
 ## 1.7.1 (2024-02-18)
 
 ### Fix
