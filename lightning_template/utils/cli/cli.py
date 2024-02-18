@@ -60,14 +60,18 @@ class LightningCLI(_LightningCLI):
             help="Configuration for the optimizers and lr schedulers.",
         )
 
+    @staticmethod
+    def randomly_select_seed() -> int:
+        return random.randint(np.iinfo(np.uint32).min, np.iinfo(np.uint32).max)
+
     def _set_seed(self) -> None:
         """Sets the seed."""
         config_seed = self._get(self.config, "seed_everything")
         if config_seed is True or config_seed is None:
-            # user requested seeding, choose randomly
-            config_seed = random.randint(
-                np.iinfo(np.uint32).min, np.iinfo(np.uint32).max
-            )
+            # Choose randomly for rank 0, reuse the seed for other processes
+            # Note that the following code only work for single node distributed training!
+            # Set the seed in the config file manually if you are using multi-node distributed training!
+            config_seed = os.environ.get("PL_GLOBAL_SEED", self.randomly_select_seed())
             if self.subcommand:
                 self.config[self.subcommand]["seed_everything"] = config_seed
             else:
