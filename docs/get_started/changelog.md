@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.7.1 (2024-02-18)
+
+### Fix
+
+- **rich-progress**: fix rich progress eta time bug
+
 ## 1.7.0 (2024-02-13)
 
 ### Feat
