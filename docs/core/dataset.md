@@ -15,13 +15,13 @@ The complete config object will look like the following:
 split_info:
     split_format_to: [ str, ... ]
     split_name_map:
-        train: train
+        fit: train
         val: val
         test: val
         predict: val
     split_prefix: init_args
     split_attr_split_str: '.'
-train:
+fit:
     <user defined config object or a list of objects to init dataset or dataloader>
 val:
     <user defined config object or a list of objects to init dataset or dataloader>
@@ -31,17 +31,17 @@ predict:
     <user defined config object or a list of objects to init dataset or dataloader>
 ```
 
-Obviously, the `split_info` key is optional, and if all `<config object>` under `train`, `val`, `test` and `predict` keys are the same, you can just use the `<config object>` as the whole config and omit the `train` etc. level.
+Obviously, the `split_info` key is optional, and if all `<config object>` under `fit`, `val`, `test` and `predict` keys are the same, you can just use the `<config object>` as the whole config and omit the `fit` etc. level.
 
 ### Deep update between split
 
-If there is something different between each split like `train` and `val`, you can use the [deep update](../configs/deep_update.md) feature to make it without copying the config object many times, the inherited order is `train`, `val`, `test` and `predict`. If the config object is a list for some splits, configs will be inherited sequentially in the list, but only the first one will be used to be inherited by other splits. For more details on the deep update feature, see [deep update doc](../configs/deep_update.md).
+If there is something different between each split like `fit` and `val`, you can use the [deep update](../configs/deep_update.md) feature to make it without copying the config object many times, the inherited order is `fit`, `val`, `test` and `predict`. If the config object is a list for some splits, configs will be inherited sequentially in the list, but only the first one will be used to be inherited by other splits. For more details on the deep update feature, see [deep update doc](../configs/deep_update.md).
 
 ### Split attr set
 
 Sometimes, we have to set some arguments (like the ann file path) for different splits according to the split name, but it's not convenient to write the deep update format to set them, so we support the split attr set feature for this. When you use the feature, you have to write the split level in the config object, instead of omitting them, and the config object must be a dict.
 
-First, we use the `split_prefix` to navigate in the config object. Then, we use the `split_attr_split_str` to split every str in `split_format_to` use them to navigate to the attr we have to set, then we will set the `$split` part in that attr to value in `split_name_map` according to the current split. Note that, the key in `split_prefix` and the last key in `split_format_to` can not exist, but other keys must exist, otherwise an error will be thrown. When the key in `split_prefix` does not exist, we will set it to a dict. By default, `split_name_map` maps all keys expect `train` to `val` for ann file path usage, `split_prefix` is equal to `init_args` for lightning CLI instantiate_class arguments format, for more details, see [arguments with class type doc](https://pytorch-lightning.readthedocs.io/en/stable/cli/lightning_cli_advanced_3.html#trainer-callbacks-and-arguments-with-class-type).
+First, we use the `split_prefix` to navigate in the config object. Then, we use the `split_attr_split_str` to split every str in `split_format_to` use them to navigate to the attr we have to set, then we will set the `$split` part in that attr to value in `split_name_map` according to the current split. Note that, the key in `split_prefix` and the last key in `split_format_to` can not exist, but other keys must exist, otherwise an error will be thrown. When the key in `split_prefix` does not exist, we will set it to a dict. By default, `split_name_map` maps all keys, except `fit`, to `val` for ann file path usage, `split_prefix` is equal to `init_args` for lightning CLI instantiate_class arguments format, for more details, see [arguments with class type doc](https://pytorch-lightning.readthedocs.io/en/stable/cli/lightning_cli_advanced_3.html#trainer-callbacks-and-arguments-with-class-type).
 
 For example, a config file as follows:
 
@@ -52,13 +52,13 @@ split_info:
         -   ann_file
         -   data_prefix.img
     split_name_map:
-        train: train
+        fit: train
         val: val
         test: test
         predict: predict
     split_prefix: init_args
     split_attr_split_str: '.'
-train:
+fit:
     class_path: mmdet.datasets.coco.CocoDataset
     init_args:
         data_root: data/coco
@@ -78,7 +78,7 @@ will get the result as:
 
 ```yaml
 # config object(dataset_cfg or dataloader_cfg)
-train:
+fit:
     class_path: mmdet.datasets.coco.CocoDataset
     init_args:
         data_root: data/coco
