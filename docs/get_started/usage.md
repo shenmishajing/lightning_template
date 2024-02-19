@@ -27,13 +27,21 @@ From that config file, we can learn several things:
 
 The key interface of the model is the `forward` method, you can refer to the [toy model config file](https://github.com/shenmishajing/toy_project/blob/main/src/project/models/toy_model.py) for the output structure of the `forward` method.
 
+#### Losses for training
+
 The output of the `forward` method should be a dict with the key `loss_dict` which contains all the loss of the model. The total loss will be calculated automatically as the sum of all the values in the `loss_dict` with `loss` in key name. If you want to calculate the total loss in a different way, you have to set the `loss` key in the `loss_dict` to  the total loss you want manually.
+
+#### Metrics for evaluation
 
 If you want to calculate metrics for your model, the output of the `forward` method should also contain a dict with the key `metric_dict` which contains the input arguments to calculate the metrics. We recommend you use the metrics implemented in [torchmetrics](https://lightning.ai/docs/torchmetrics/stable/). If so, you only need to return a `metric_dict` with `preds` and `target` key as [toy model python file](https://github.com/shenmishajing/toy_project/blob/main/src/project/models/toy_model.py) and set the metrics you want to use like [metrics config file](https://github.com/shenmishajing/toy_project/blob/main/configs/metrics/classification.yaml).
 
 Both the losses and the metrics will be logged automatically.
 
-Note that we recommend you inherit the `LightningModule` from [lightning template](https://github.com/shenmishajing/lightning_template) directly, which will facilitate the development of the model. However, if you have to use the model implemented in other libraries, you can import it as the `model` argument of the `LightningModule` and implement the `forward` method to wrap the model.
+#### Prediction and visualization
+
+If you want to visualize the prediction of your model, you can implement a series of tasks func with name `predict_<task-name>` in the `LightningModule` and set the `predict_tasks` argument to the list of the name of tasks you want to run. The `predict_forward` func will be called before the prediction to prepare some results which should be shared between all the prediction tasks, and all the `predict_<task-name>` func mentioned in `predict_tasks` will be called to visualize the prediction. You can refer to the [doc](../core/model.md) and the [toy model python file](https://github.com/shenmishajing/toy_project/blob/main/src/project/models/toy_model.py) for more details.
+
+Note that we recommend you inherit the `LightningModule` directly, which will facilitate the development of your model. However, if you have to use the model implemented in other libraries, you can import it as the `model` argument of the `LightningModule` and implement the `forward` method to wrap the model.
 
 ## Config optimizers and lr schedulers
 
