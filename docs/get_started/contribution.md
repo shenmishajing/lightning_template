@@ -4,9 +4,9 @@
 
 Install this project, the required dependencies and the pre-commit hooks for development.
 
-```note
+````{note}
 You have to clone this project first and run the following commands in the root folder of this project.
-```
+````
 
 ```bash
 pip install -e ".[dev]"
