@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.7.3 (2024-02-20)
+
+### Fix
+
+- **SaveAndLogConfigCallback**: fix SaveAndLogConfigCallback stuck at resolve ckpt dir path bug
+
 ## 1.7.2 (2024-02-18)
 
 ### Fix
