@@ -41,6 +41,10 @@ Both the losses and the metrics will be logged automatically.
 
 If you want to visualize the prediction of your model, you can implement a series of tasks func with name `predict_<task-name>` in the `LightningModule` and set the `predict_tasks` argument to the list of the name of tasks you want to run. The `predict_forward` func will be called before the prediction to prepare some results which should be shared between all the prediction tasks, and all the `predict_<task-name>` func mentioned in `predict_tasks` will be called to visualize the prediction. You can refer to the [doc](../core/model.md) and the [toy model python file](https://github.com/shenmishajing/toy_project/blob/main/src/project/models/toy_model.py) for more details.
 
+By default, if you use the `predict_path` and `output_path` as the path to save your prediction or visualization result. You can find your result in `prediction` folder in your working directory if you do not set the `ckpt_path`. If you set the `ckpt_path` to the checkpoint you want to use, you can find your result in the `prediction` folder in the parent folder of the checkpoint.
+
+#### The model argument
+
 Note that we recommend you inherit the `LightningModule` directly, which will facilitate the development of your model. However, if you have to use the model implemented in other libraries, you can import it as the `model` argument of the `LightningModule` and implement the `forward` method to wrap the model.
 
 ## Config optimizers and lr schedulers
@@ -60,6 +64,14 @@ You can get some examples from [project_template](https://github.com/shenmishaji
 ## CLI
 
 This project is based on the [lightning CLI](https://pytorch-lightning.readthedocs.io/en/stable/cli/lightning_cli.html), so it supports all features from [pytorch lightning](https://pytorch-lightning.readthedocs.io/en/stable/) and [lightning CLI](https://pytorch-lightning.readthedocs.io/en/stable/cli/lightning_cli.html), you can get a brief introduction from [cli doc](../tools/cli.md).
+
+Briefly, use the following command to train, validate, test, or predict your model.
+
+```bash
+CUDA_VISIBLE_DEVICES=<gpu_ids> cli {fit, validation, test, predict} --config configs/runs/path/to/config [ --ckpt_path path/to/checkpoint ]
+```
+
+The `gpu_ids` is a comma-separated id list or just one int. The `ckpt_path` is an optional path to the checkpoint you want to use for resume fit, validation, test, or prediction.
 
 ## Wandb Logger
 
