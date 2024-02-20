@@ -37,8 +37,19 @@ class SaveAndLogConfigCallback(SaveConfigCallback):
         """
         # save local config file
         if stage == TrainerFn.FITTING:
-            trainer.checkpoint_callback.setup(trainer, pl_module, stage)
-            log_dir = os.path.dirname(trainer.checkpoint_callback.dirpath)
+            if trainer.logger is not None:
+                if trainer.logger.save_dir is not None:
+                    save_dir = trainer.logger.save_dir
+                else:
+                    save_dir = trainer.default_root_dir
+                name = trainer.logger.name
+                version = trainer.logger.version
+                version = version if isinstance(version, str) else f"version_{version}"
+                log_dir = os.path.join(save_dir, str(name), version)
+            else:
+                # if no loggers, use default_root_dir
+                log_dir = trainer.default_root_dir
+
             config_path = os.path.join(log_dir, self.config_filename)
 
             fs = get_filesystem(log_dir)
