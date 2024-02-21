@@ -29,5 +29,5 @@ Generally, you can just use the latest dependencies without specifying their ver
 ```bash
 git clone https://github.com/shenmishajing/lightning_template.git
 cd lightning_template
-pip install -e .
+pip install -e ".[deps]"
 ```

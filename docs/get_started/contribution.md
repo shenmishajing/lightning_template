@@ -4,21 +4,23 @@
 
 Install this project, the required dependencies and the pre-commit hooks for development.
 
-````{note}
-You have to clone this project first and run the following commands in the root folder of this project.
-````
+We recommend you install all required dependencies including the development and project dependencies by `pip install -e ".[all]"`. However, if you want to install only the necessary part of the dependencies, you can install the project and core development dependencies by `pip install -e ".[deps,dev-core]"` and install the required dependencies of each development action following the description in the following sections.
+
+After you installed the project and the required dependencies, you can install the pre-commit hooks by `pre-commit install`.
+
+Overall, we recommend you install all required dependencies and the pre-commit hooks by the following commands:
 
 ```bash
-pip install -e ".[dev]"
+pip install -e ".[all]"
 pre-commit install
 ```
 
 ### Build Documents
 
-Install the required dependencies to build the documents.
+You have to install the required dependencies to build the documents, if you install the core development dependencies only in the previous section.
 
 ```bash
-pip install -e ".[doc]"
+pip install -e ".[dev-doc]"
 ```
 
 Launch the live server to build and preview the documents.
@@ -29,10 +31,10 @@ sphinx-autobuild docs docs/_build
 
 ### Build Package
 
-Install the required dependencies to build the package.
+You have to install the required dependencies to build the package, if you install the core development dependencies only in the previous section.
 
 ```bash
-pip install -e ".[build]"
+pip install -e ".[dev-build]"
 ```
 
 Build the package.
@@ -43,10 +45,10 @@ python -m build
 
 ### Unit Tests
 
-Install the required dependencies to run unit tests.
+You have to install the required dependencies to run unit tests, if you install the core development dependencies only in the previous section.
 
 ```bash
-pip install -e ".[test]"
+pip install -e ".[dev-test]"
 ```
 
 #### Run the unit tests.

@@ -31,9 +31,13 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
+# optional dependencies for project
 optional = ["wandb", "rich", "thop"]
-dev = ["pre-commit", "commitizen"]
-doc = [
+deps = ["lightning-template[optional]"]
+
+# dependencies for development
+dev-commit = ["pre-commit", "commitizen"]
+dev-doc = [
     "sphinx",
     "sphinx-autobuild",
     "sphinx-book-theme",
@@ -41,9 +45,14 @@ doc = [
     "myst-parser",
     "sphinx_design",
 ]
-build = ["build"]
-test = ["tox", "pytest", "pytest-cov"]
-all = ["lightning-template[optional,dev,doc,build,test]"]
+dev-build = ["build"]
+dev-test = ["tox", "pytest", "pytest-cov"]
+dev-profile = ["torch_tb_profiler"]
+dev-core = ["lightning-template[dev-commit]"]
+dev = ["lightning-template[dev-core,dev-doc,dev-build,dev-test,dev-profile]"]
+
+# all dependencies
+all = ["lightning-template[deps,dev]"]
 
 [project.urls]
 Homepage = "https://github.com/shenmishajing/lightning_template"
