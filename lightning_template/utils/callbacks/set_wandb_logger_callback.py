@@ -11,8 +11,6 @@ from lightning.pytorch.loggers.wandb import WandbLogger
 
 
 class SetWandbLoggerCallback(Callback):
-    """Set wandb logger when training starts."""
-
     def __init__(
         self,
         log_code_cfg: Optional[Union[dict, bool]] = None,

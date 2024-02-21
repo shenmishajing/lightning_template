@@ -6,8 +6,6 @@ from torch.multiprocessing import get_all_sharing_strategies, set_sharing_strate
 
 
 class SetSharingStrategyCallback(Callback):
-    """Set sharing strategy when training starts."""
-
     def __init__(
         self,
         strategy: Optional[str] = "file_descriptor",
