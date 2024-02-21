@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.8.0 (2024-02-21)
+
+### Feat
+
+- **SetRichTracebackHandlerCallback**: add SetRichTracebackHandlerCallback feature, remove useless doc strings
+
 ## 1.7.3 (2024-02-20)
 
 ### Fix
