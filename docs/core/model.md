@@ -20,6 +20,21 @@ A list of path of checkpoints, if you pass this argument, the checkpoints will b
 
 A dict to define your evaluators, which will be split for different split datasets. For more details, see the [Split attr set doc](dataset.md#split-attr-set) in the dataset doc. You can register all the evaluators as submodels of your model by setting the `evaluator_as_submodule` to `True`.
 
+### finetune_cfg
+
+A dict to define which parameters you want to finetune. The config would be like this:
+
+```yaml
+finetune_cfg:
+    finetune: True
+    params:
+        - model.layer1
+        - model.fc
+        ...
+```
+
+If the `finetune` is set to `True`, the parameters in the `params` list will be set to `requires_grad=True`, otherwise, the parameters in the `params` list will be set to `requires_grad=False`. You can omit the `finetune` key, when you want to set it `True`, and you can only set the `finetune_cfg` to the list of params you want to finetune. Also, you use a single str instead of a list of str as params, which means only one group of parameters match that str will be selected.
+
 ### loss_weights
 
 A dict for loss weights, if you use the `loss_step` method from the base LightningModule, the loss dict will multi the loss weight dict before calculating the total loss.

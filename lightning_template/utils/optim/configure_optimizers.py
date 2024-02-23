@@ -63,7 +63,9 @@ def parser_optim_config(optim_config):
     return optim_config, all_required_parameters
 
 
-def get_parameters(model, all_required_parameters):
+def get_parameters(
+    model, all_required_parameters: set, finetune_rest=False, return_rest=False
+):
     """Get all optimizer parameters.
 
     Args:
@@ -71,7 +73,7 @@ def get_parameters(model, all_required_parameters):
         all_required_parameters: a set of required parameter names.
     """
     parameters = defaultdict(list)
-    set_rest = None in all_required_parameters
+    return_rest = return_rest or None in all_required_parameters
     all_required_parameters.discard(None)
     all_required_parameters = sorted(
         sorted(all_required_parameters), key=len, reverse=True
@@ -82,10 +84,10 @@ def get_parameters(model, all_required_parameters):
                 parameters[required_parameter].append(p)
                 break
         else:
-            if set_rest:
+            if return_rest:
                 parameters[None].append(p)
             else:
-                raise ValueError(f"parameter {name} is not in required_parameters")
+                p.requires_grad = finetune_rest
     return parameters
 
 

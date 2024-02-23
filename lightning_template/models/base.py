@@ -8,6 +8,7 @@ from lightning.pytorch.utilities.rank_zero import rank_zero_only
 
 from lightning_template.utils.cli import recursive_instantate_class
 from lightning_template.utils.mixin import SplitNameMixin
+from lightning_template.utils.optim.configure_optimizers import get_parameters
 
 
 class LightningModule(SplitNameMixin, _LightningModule):
@@ -15,6 +16,7 @@ class LightningModule(SplitNameMixin, _LightningModule):
         self,
         model: Optional[torch.nn.Module] = None,
         ckpt_path: Optional[Union[str, List[str]]] = None,
+        finetune_cfg: Optional[Union[str, List[str], Mapping]] = None,
         evaluator_cfg: Mapping = None,
         evaluator_as_submodule: bool = True,
         loss_weights=None,
@@ -35,6 +37,15 @@ class LightningModule(SplitNameMixin, _LightningModule):
         self.evaluator_cfg = self.get_split_config(evaluator_cfg)
         self.evaluate_as_submodule = evaluator_as_submodule
 
+        if finetune_cfg is not None:
+            if isinstance(finetune_cfg, str):
+                finetune_cfg = {finetune_cfg}
+            if isinstance(finetune_cfg, list):
+                finetune_cfg = set(finetune_cfg)
+            if isinstance(finetune_cfg, set):
+                finetune_cfg = {"finetune": True, "params": finetune_cfg}
+        self.finetune_cfg = finetune_cfg
+
         if predict_tasks is None:
             predict_tasks = []
         elif isinstance(predict_tasks, str):
@@ -50,6 +61,7 @@ class LightningModule(SplitNameMixin, _LightningModule):
         self.lr = None
         self.automatic_lr_schedule = True
         self.manual_step_scedulers = []
+        self.model_not_configured = True
 
         if ckpt_path is not None:
             for p in ckpt_path:
@@ -57,6 +69,22 @@ class LightningModule(SplitNameMixin, _LightningModule):
                     checkpoint = torch.load(p, map_location="cpu")
                     self.on_load_checkpoint(checkpoint)
                     self.load_state_dict(checkpoint["state_dict"], strict=False)
+
+    def configure_model(self):
+        super().configure_model()
+
+        if self.model_not_configured:
+            if self.finetune_cfg:
+                params = get_parameters(
+                    self,
+                    self.finetune_cfg["params"],
+                    finetune_rest=not self.finetune_cfg["finetune"],
+                )
+                for param in params.values():
+                    for p in param:
+                        p.requires_grad = self.finetune_cfg["finetune"]
+
+            self.model_not_configured = False
 
     @staticmethod
     def recursive_parse_modules(module):
