@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.9.0 (2024-02-23)
+
+### Feat
+
+- **finetune**: add finetune cfg feature
+
+### Fix
+
+- **parser_optim_config**: fix parser_optim_config str is sequence bug
+
 ## 1.8.1 (2024-02-23)
 
 ## 1.8.0 (2024-02-21)
