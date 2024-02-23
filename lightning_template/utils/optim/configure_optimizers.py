@@ -1,7 +1,7 @@
 import copy
 from collections import defaultdict
 from itertools import chain
-from typing import List, Mapping, Sequence, Tuple, Union
+from typing import List, Mapping, Tuple, Union
 
 from lightning.pytorch import LightningModule
 from lightning.pytorch.cli import instantiate_class
@@ -16,7 +16,7 @@ def parser_optim_config(optim_config):
         optim_config (dict): The optimizer and lr_scheduler config.
     """
     optim_config = copy.deepcopy(optim_config)
-    if not isinstance(optim_config, Sequence):
+    if not isinstance(optim_config, list):
         optim_config = [optim_config]
 
     all_required_parameters = set()
@@ -32,19 +32,19 @@ def parser_optim_config(optim_config):
         optimizer_init_args = optim_cfg["optimizer"]["init_args"]
         if "params" not in optimizer_init_args:
             optimizer_init_args["params"] = [{"params": None}]
-        if not isinstance(optimizer_init_args["params"], Sequence):
+        if not isinstance(optimizer_init_args["params"], list):
             optimizer_init_args["params"] = [optimizer_init_args["params"]]
 
         for param_idx in range(len(optimizer_init_args["params"])):
             cur_params = optimizer_init_args["params"][param_idx]
             if not isinstance(cur_params, Mapping):
-                if not isinstance(cur_params, List):
+                if not isinstance(cur_params, list):
                     cur_params = [cur_params]
                 optimizer_init_args["params"][param_idx] = {"params": cur_params}
                 cur_params = optimizer_init_args["params"][param_idx]
             elif "params" not in cur_params:
                 cur_params["params"] = [None]
-            elif not isinstance(cur_params["params"], List):
+            elif not isinstance(cur_params["params"], list):
                 cur_params["params"] = [cur_params["params"]]
 
             for p in cur_params["params"]:
