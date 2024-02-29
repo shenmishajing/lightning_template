@@ -25,13 +25,19 @@ From that config file, we can learn several things:
 
 ### Model
 
+#### Model definition
+
+We recommend you define your model in the `configure_model` method, which will speed up the initialization of your model and reduce the amount of CPU memory required, especially when you are using shared strategies, such as DeepSpeed and FSDP. However, the `configure_model` method will be called during each of fit/val/test/predict stages in the same process, so ensure that implementation of this hook is idempotent, i.e., after the first time the hook is called, subsequent calls to it should be a no-op. See [doc](../core/model.md) for more details. You can refer to the implementation of the [toy model python file](https://github.com/shenmishajing/toy_project/blob/main/src/project/models/toy_model.py) for more details.
+
+#### Forward method
+
 The key interface of the model is the `forward` method, you can refer to the [toy model config file](https://github.com/shenmishajing/toy_project/blob/main/src/project/models/toy_model.py) for the output structure of the `forward` method.
 
-#### Losses for training
+##### Losses for training
 
 The output of the `forward` method should be a dict with the key `loss_dict` which contains all the loss of the model. The total loss will be calculated automatically as the sum of all the values in the `loss_dict` with `loss` in key name. If you want to calculate the total loss in a different way, you have to set the `loss` key in the `loss_dict` to  the total loss you want manually.
 
-#### Metrics for evaluation
+##### Metrics for evaluation
 
 If you want to calculate metrics for your model, the output of the `forward` method should also contain a dict with the key `metric_dict` which contains the input arguments to calculate the metrics. We recommend you use the metrics implemented in [torchmetrics](https://lightning.ai/docs/torchmetrics/stable/). If so, you only need to return a `metric_dict` with `preds` and `target` key as [toy model python file](https://github.com/shenmishajing/toy_project/blob/main/src/project/models/toy_model.py) and set the metrics you want to use like [metrics config file](https://github.com/shenmishajing/toy_project/blob/main/configs/metrics/classification.yaml).
 
