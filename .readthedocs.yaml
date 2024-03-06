@@ -34,4 +34,4 @@ python:
     - method: pip
       path: .
       extra_requirements:
-        - doc
+        - dev-doc
