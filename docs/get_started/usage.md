@@ -27,7 +27,9 @@ From that config file, we can learn several things:
 
 #### Model definition
 
-We recommend you define your model in the `configure_model` method, which will speed up the initialization of your model and reduce the amount of CPU memory required, especially when you are using shared strategies, such as DeepSpeed and FSDP. However, the `configure_model` method will be called during each of fit/val/test/predict stages in the same process, so ensure that implementation of this hook is idempotent, i.e., after the first time the hook is called, subsequent calls to it should be a no-op. See [doc](../core/model.md) for more details. You can refer to the implementation of the [toy model python file](https://github.com/shenmishajing/toy_project/blob/main/src/project/models/toy_model.py) for more details.
+We recommend you define your model in the `build_model` method, which will be called by the `configure_model` hook of [pytorch lightning](https://pytorch-lightning.readthedocs.io/en/stable/).
+
+The `configure_model` hook will speed up the initialization of your model and reduce the amount of CPU memory required, especially when you are using shared strategies, such as DeepSpeed and FSDP. However, the `configure_model` method will be called during each of fit/val/test/predict stages in the same process, so ensure that implementation of this hook is idempotent, i.e., after the first time the hook is called, subsequent calls to it should be a no-op (see the [doc](https://lightning.ai/docs/pytorch/stable/common/lightning_module.html#configure-model) from [pytorch lightning](https://pytorch-lightning.readthedocs.io/en/stable/) for more details), which is error prone. Therefore, we design the `build_model` method to avoid the most common errors, with which you can init your model as in the `__init__` method. You can refer to the implementation of the [toy model python file](https://github.com/shenmishajing/toy_project/blob/main/src/project/models/toy_model.py) for more details.
 
 #### Forward method
 
