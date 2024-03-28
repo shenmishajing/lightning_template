@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.10.0 (2024-03-28)
+
+### Feat
+
+- **model**: add build model hook
+
+### Fix
+
+- **ckpt**: fit load ckpt bug
+
 ## 1.9.0 (2024-02-23)
 
 ### Feat
