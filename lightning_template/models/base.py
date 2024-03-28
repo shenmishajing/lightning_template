@@ -74,6 +74,13 @@ class LightningModule(SplitNameMixin, _LightningModule):
         super().configure_model()
 
         if self.model_not_configured:
+            if self.ckpt_path is not None:
+                for p in self.ckpt_path:
+                    if os.path.exists(p):
+                        checkpoint = torch.load(p, map_location="cpu")
+                        self.on_load_checkpoint(checkpoint)
+                        self.load_state_dict(checkpoint["state_dict"], strict=False)
+
             if self.finetune_cfg:
                 params = get_parameters(
                     self,
