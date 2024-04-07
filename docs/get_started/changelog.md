@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.10.1 (2024-04-07)
+
+### Fix
+
+- **model_checkpoint**: fix model checkpoint callback can not remove symbolic link bug
+
 ## 1.10.0 (2024-03-28)
 
 ### Feat
