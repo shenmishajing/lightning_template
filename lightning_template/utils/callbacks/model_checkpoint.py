@@ -5,7 +5,6 @@ from typing import Dict, Optional
 import lightning.pytorch as pl
 import torch
 from fsspec.utils import get_protocol
-from lightning.fabric.utilities.cloud_io import _is_local_file_protocol
 from lightning.pytorch.callbacks import ModelCheckpoint
 from lightning.pytorch.utilities.types import _METRIC
 
@@ -28,57 +27,19 @@ class ModelCheckpointWithLinkBest(ModelCheckpoint):
         if old_best_model_path != self.best_model_path:
             self._save_best_checkpoint(trainer, monitor_candidates)
 
-    @staticmethod
-    def _link_checkpoint(trainer: "pl.Trainer", filepath: str, linkpath: str) -> None:
+    def _save_checkpoint(self, trainer: "pl.Trainer", filepath: str) -> None:
         if trainer.is_global_zero:
-            if os.path.islink(linkpath) or os.path.isfile(linkpath):
-                os.remove(linkpath)
-            elif os.path.isdir(linkpath):
-                shutil.rmtree(linkpath)
-            try:
-                os.symlink(
-                    os.path.relpath(filepath, os.path.dirname(linkpath)), linkpath
-                )
-            except OSError:
-                # on Windows, special permissions are required to create symbolic links as a regular user
-                # fall back to copying the file
-                shutil.copy(filepath, linkpath)
-        trainer.strategy.barrier()
+            if os.path.islink(filepath) or os.path.isfile(filepath):
+                os.remove(filepath)
+            elif os.path.isdir(filepath):
+                shutil.rmtree(filepath)
+        super()._save_checkpoint(trainer, filepath)
 
     def _save_last_checkpoint(
         self, trainer: "pl.Trainer", monitor_candidates: Dict[str, torch.Tensor]
     ) -> None:
-        if not self.save_last:
-            return
-
-        filepath = self.format_checkpoint_name(
-            monitor_candidates, self.CHECKPOINT_NAME_LAST
-        )
-
-        if self._enable_version_counter:
-            version_cnt = self.STARTING_VERSION
-            while (
-                self.file_exists(filepath, trainer) and filepath != self.last_model_path
-            ):
-                filepath = self.format_checkpoint_name(
-                    monitor_candidates, self.CHECKPOINT_NAME_LAST, ver=version_cnt
-                )
-                version_cnt += 1
-
-        # set the last model path before saving because it will be part of the state.
-        previous, self.last_model_path = self.last_model_path, filepath
-        self._remove_checkpoint(trainer, filepath)
-        if (
-            _is_local_file_protocol(filepath)
-            and self._last_checkpoint_saved
-            and self.save_top_k != 0
-        ):
-            self._link_checkpoint(trainer, self._last_checkpoint_saved, filepath)
-        else:
-            self._save_checkpoint(trainer, filepath)
+        super()._save_last_checkpoint(trainer, monitor_candidates)
         self._last_checkpoint_saved = None
-        if previous and self._should_remove_checkpoint(trainer, previous, filepath):
-            self._remove_checkpoint(trainer, previous)
 
     def _save_best_checkpoint(
         self, trainer: "pl.Trainer", monitor_candidates: Dict[str, _METRIC]
