@@ -71,24 +71,6 @@ class LightningModule(SplitNameMixin, _LightningModule):
 
         if self.model_not_configured:
             self.build_model()
-
-            if self.ckpt_path is not None:
-                for p in self.ckpt_path:
-                    if os.path.exists(p):
-                        checkpoint = torch.load(p, map_location="cpu")
-                        self.on_load_checkpoint(checkpoint)
-                        self.load_state_dict(checkpoint["state_dict"], strict=False)
-
-            if self.finetune_cfg:
-                params = get_parameters(
-                    self,
-                    self.finetune_cfg["params"],
-                    finetune_rest=not self.finetune_cfg["finetune"],
-                )
-                for param in params.values():
-                    for p in param:
-                        p.requires_grad = self.finetune_cfg["finetune"]
-
             self.model_not_configured = False
 
     @staticmethod
@@ -121,6 +103,29 @@ class LightningModule(SplitNameMixin, _LightningModule):
             self._evaluators = torch.nn.ModuleList(
                 self.recursive_parse_modules(self.evaluators)
             )
+
+    def on_fit_start(self):
+        super().on_fit_start()
+
+        if self.ckpt_path is not None:
+            strict_loading = self.strict_loading
+            self.strict_loading = False
+            for checkpoint_path in self.ckpt_path:
+                if os.path.exists(checkpoint_path):
+                    self.trainer._checkpoint_connector.resume_start(checkpoint_path)
+                    self.trainer._checkpoint_connector.restore_model()
+                    self.trainer._checkpoint_connector.resume_end()
+            self.strict_loading = strict_loading
+
+        if self.finetune_cfg:
+            params = get_parameters(
+                self,
+                self.finetune_cfg["params"],
+                finetune_rest=not self.finetune_cfg["finetune"],
+            )
+            for param in params.values():
+                for p in param:
+                    p.requires_grad = self.finetune_cfg["finetune"]
 
     def optimizer_step(self, *args, **kwargs) -> None:
         # update params

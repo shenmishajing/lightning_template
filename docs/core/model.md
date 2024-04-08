@@ -14,7 +14,7 @@ The first argument is the `model`. We recommend you inherit the base LightningMo
 
 ### ckpt_path
 
-A list of path of checkpoints, if you pass this argument, the checkpoints will be loaded from the path and be used to init the model sequentially.
+A list of paths of checkpoints to load for fit, if you pass this argument, the checkpoints will be loaded from the path and be used to init the model sequentially on the fit start.
 
 ### evaluator_cfg
 
