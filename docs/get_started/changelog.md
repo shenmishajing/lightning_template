@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.10.2 (2024-04-08)
+
+### Fix
+
+- **ckpt_path**: fix ckpt_path bug, only load ckpt and freeza parameter for fit
+
 ## 1.10.1 (2024-04-07)
 
 ### Fix
