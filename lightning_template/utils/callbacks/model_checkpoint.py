@@ -24,7 +24,7 @@ class ModelCheckpointWithLinkBest(ModelCheckpoint):
     ) -> None:
         old_best_model_path = self.best_model_path
         super()._update_best_and_save(current, trainer, monitor_candidates)
-        if old_best_model_path != self.best_model_path:
+        if trainer.strategy.broadcast(old_best_model_path != self.best_model_path):
             self._save_best_checkpoint(trainer, monitor_candidates)
 
     def _save_checkpoint(self, trainer: "pl.Trainer", filepath: str) -> None:
