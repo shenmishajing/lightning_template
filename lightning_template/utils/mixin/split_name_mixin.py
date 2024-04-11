@@ -70,32 +70,36 @@ class SplitNameMixin:
                 res = {self.split_names[0]: config}
                 for name in self.split_names[1:]:
                     res[name] = copy.deepcopy(config)
-                return res
             else:
                 res = {}
                 last_config = None
                 for name in self.split_names:
-                    if last_config is None:
-                        res[name] = config[name]
-                    else:
-                        if isinstance(config.get(name, {}), List):
-                            res[name] = []
-                            for i in range(len(config[name])):
-                                res[name].append(
-                                    deep_update(
-                                        copy.deepcopy(last_config), config[name][i]
-                                    )
-                                )
-                                last_config = res[name][i]
+                    if name in config:
+                        if last_config is None:
+                            res[name] = config[name]
                         else:
-                            res[name] = deep_update(
-                                copy.deepcopy(last_config), config.get(name, {})
-                            )
-
-                    if isinstance(res[name], List):
-                        last_config = res[name][0]
+                            if isinstance(config.get(name, {}), List):
+                                res[name] = []
+                                for i in range(len(config[name])):
+                                    res[name].append(
+                                        deep_update(
+                                            copy.deepcopy(last_config), config[name][i]
+                                        )
+                                    )
+                                    last_config = res[name][i]
+                            else:
+                                res[name] = deep_update(
+                                    copy.deepcopy(last_config), config.get(name, {})
+                                )
                     else:
-                        last_config = res[name]
+                        if last_config is not None:
+                            res[name] = copy.deepcopy(last_config)
+
+                    if name in res:
+                        if isinstance(res[name], List):
+                            last_config = res[name][0]
+                        else:
+                            last_config = res[name]
 
                 if "split_info" in config and "split_format_to" in config["split_info"]:
                     config = config["split_info"]
@@ -112,25 +116,26 @@ class SplitNameMixin:
                     config.setdefault("split_attr_split_str", ".")
 
                     for name in self.split_names:
-                        for split_attr in config["split_format_to"]:
-                            if isinstance(res[name], list):
-                                for cur_cfg in res[name]:
+                        if name in res:
+                            for split_attr in config["split_format_to"]:
+                                if isinstance(res[name], list):
+                                    for cur_cfg in res[name]:
+                                        self.substitute_split_name(
+                                            cur_cfg,
+                                            split_attr=split_attr,
+                                            split_name=name,
+                                            **config,
+                                        )
+                                else:
                                     self.substitute_split_name(
-                                        cur_cfg,
+                                        res[name],
                                         split_attr=split_attr,
                                         split_name=name,
                                         **config,
                                     )
-                            else:
-                                self.substitute_split_name(
-                                    res[name],
-                                    split_attr=split_attr,
-                                    split_name=name,
-                                    **config,
-                                )
-                return res
         else:
             res = {self.split_names[0]: config if config else {}}
             for name in self.split_names[1:]:
                 res[name] = copy.deepcopy(config) if config else {}
-            return res
+
+        return res
