@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.11.1 (2024-04-11)
+
+### Fix
+
+- **split_name**: fix deepspeed split name bug
+
 ## 1.11.0 (2024-04-11)
 
 ### Feat
