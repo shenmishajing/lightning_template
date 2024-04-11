@@ -3,6 +3,8 @@ import string
 from collections import OrderedDict
 from typing import List, Mapping
 
+from lightning.pytorch.strategies import DeepSpeedStrategy
+
 from ..cli.argument_parsers import deep_update
 
 
@@ -29,10 +31,14 @@ class SplitNameMixin:
             split_names = self.split_names
         elif stage == "fit":
             split_names = [self.TrainSplit, self.ValidateSplit]
-        elif stage == "validate":
-            split_names = [self.ValidateSplit]
         else:
-            split_names = [stage.lower()]
+            if stage == "validate":
+                split_names = [self.ValidateSplit]
+            else:
+                split_names = [stage.lower()]
+
+            if isinstance(self.trainer.strategy, DeepSpeedStrategy):
+                split_names = [self.TrainSplit] + split_names
         return split_names
 
     def setup(self, stage=None):
