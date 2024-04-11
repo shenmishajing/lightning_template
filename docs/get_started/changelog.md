@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.11.0 (2024-04-11)
+
+### Feat
+
+- **split_name**: support no split
+
 ## 1.10.3 (2024-04-09)
 
 ### Fix
