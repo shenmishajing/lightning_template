@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.11.2 (2024-04-13)
+
+### Fix
+
+- **split_name**: fix list config bug
+
 ## 1.11.1 (2024-04-11)
 
 ### Fix
