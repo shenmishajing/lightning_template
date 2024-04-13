@@ -71,77 +71,69 @@ class SplitNameMixin:
         ).safe_substitute(split=split_name_map[split_name])
 
     def get_split_config(self, config):
-        if isinstance(config, Mapping):
-            if all([config.get(name) is None for name in self.split_names]):
-                res = {self.split_names[0]: config}
-                for name in self.split_names[1:]:
-                    res[name] = copy.deepcopy(config)
-            else:
-                res = {}
-                last_config = None
-                for name in self.split_names:
-                    if name in config:
-                        if last_config is None:
-                            res[name] = config[name]
-                        else:
-                            if isinstance(config.get(name, {}), List):
-                                res[name] = []
-                                for i in range(len(config[name])):
-                                    res[name].append(
-                                        deep_update(
-                                            copy.deepcopy(last_config), config[name][i]
-                                        )
-                                    )
-                                    last_config = res[name][i]
-                            else:
-                                res[name] = deep_update(
-                                    copy.deepcopy(last_config), config.get(name, {})
-                                )
-                    else:
-                        if last_config is not None:
-                            res[name] = copy.deepcopy(last_config)
-
-                    if name in res:
-                        if isinstance(res[name], List):
-                            last_config = res[name][0]
-                        else:
-                            last_config = res[name]
-
-                if "split_info" in config and "split_format_to" in config["split_info"]:
-                    config = config["split_info"]
-
-                    if not isinstance(config["split_format_to"], List):
-                        config["split_format_to"] = [config["split_format_to"]]
-
-                    if "split_name_map" not in config:
-                        config["split_name_map"] = {}
-                    for k, v in self.SplitNameMap.items():
-                        config["split_name_map"].setdefault(k, v)
-
-                    config.setdefault("split_prefix", "init_args")
-                    config.setdefault("split_attr_split_str", ".")
-
-                    for name in self.split_names:
-                        if name in res:
-                            for split_attr in config["split_format_to"]:
-                                if isinstance(res[name], list):
-                                    for cur_cfg in res[name]:
-                                        self.substitute_split_name(
-                                            cur_cfg,
-                                            split_attr=split_attr,
-                                            split_name=name,
-                                            **config,
-                                        )
-                                else:
-                                    self.substitute_split_name(
-                                        res[name],
-                                        split_attr=split_attr,
-                                        split_name=name,
-                                        **config,
-                                    )
-        else:
+        if not isinstance(config, Mapping) or all(
+            [config.get(name) is None for name in self.split_names]
+        ):
             res = {self.split_names[0]: config if config else {}}
             for name in self.split_names[1:]:
                 res[name] = copy.deepcopy(config) if config else {}
+            return res
+
+        res = {}
+        last_config = None
+        for name in self.split_names:
+            if name in config:
+                if isinstance(config.get(name, {}), List):
+                    res[name] = []
+                    for i in range(len(config[name])):
+                        res[name].append(
+                            deep_update(copy.deepcopy(last_config), config[name][i])
+                        )
+                        last_config = res[name][i]
+                else:
+                    res[name] = deep_update(
+                        copy.deepcopy(last_config), config.get(name, {})
+                    )
+            elif last_config is not None:
+                res[name] = copy.deepcopy(last_config)
+
+            if name in res:
+                if isinstance(res[name], List):
+                    last_config = res[name][0]
+                else:
+                    last_config = res[name]
+
+        if "split_info" in config and "split_format_to" in config["split_info"]:
+            config = config["split_info"]
+
+            if not isinstance(config["split_format_to"], List):
+                config["split_format_to"] = [config["split_format_to"]]
+
+            if "split_name_map" not in config:
+                config["split_name_map"] = {}
+            for k, v in self.SplitNameMap.items():
+                config["split_name_map"].setdefault(k, v)
+
+            config.setdefault("split_prefix", "init_args")
+            config.setdefault("split_attr_split_str", ".")
+
+            for name in self.split_names:
+                if name in res:
+                    for split_attr in config["split_format_to"]:
+                        if isinstance(res[name], list):
+                            for cur_cfg in res[name]:
+                                self.substitute_split_name(
+                                    cur_cfg,
+                                    split_attr=split_attr,
+                                    split_name=name,
+                                    **config,
+                                )
+                        else:
+                            self.substitute_split_name(
+                                res[name],
+                                split_attr=split_attr,
+                                split_name=name,
+                                **config,
+                            )
 
         return res
