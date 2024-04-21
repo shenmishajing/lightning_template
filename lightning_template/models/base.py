@@ -338,18 +338,27 @@ class LightningModule(SplitNameMixin, _LightningModule):
                 self.predict_path,
             )
 
-        for task in self.predict_tasks:
-            self.rm_and_create(os.path.join(self.predict_path, task))
-
         self.predictions = {"dependency": []}
+
         for task in self.predict_tasks:
+            output_path = os.path.join(self.predict_path, task)
+            self.rm_and_create(output_path)
+
             if hasattr(self, f"predict_{task}_start"):
-                self.predictions[task] = getattr(self, f"predict_{task}_start")(
-                    output_path=os.path.join(self.predict_path, task), task=task
+                prediction = getattr(self, f"predict_{task}_start")(
+                    output_path=output_path, task=task
                 )
             else:
-                self.predictions[task] = {"dependency": [], "result": []}
-            self.predictions["dependency"].extend(self.predictions[task]["dependency"])
+                prediction = []
+
+            if not isinstance(prediction, Mapping) or "dependency" not in prediction:
+                prediction = {"result": prediction, "dependency": []}
+            elif not isinstance(prediction["dependency"], list):
+                prediction["dependency"] = [prediction["dependency"]]
+            prediction["output_path"] = output_path
+            self.predictions[task] = prediction
+
+            self.predictions["dependency"].extend(prediction["dependency"])
 
     def predict_forward(self, *args, **kwargs):
         return {}
