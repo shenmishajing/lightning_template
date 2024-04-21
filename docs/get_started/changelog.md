@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.12.1 (2024-04-20)
+
+### Refactor
+
+- **predict**: refactor predict start
+
 ## 1.12.0 (2024-04-20)
 
 ### Feat
