@@ -63,4 +63,30 @@ Therefore, if you want to implement your own logic and reuse our train step code
 
 ## Predict loop
 
-We use the `predict_tasks` attr to identify the prediction tasks we have to complete during the prediction. The `LightningModule` accepts a list of str as task names, for each name, we create the output_path for saving visualization results, and save them as key-value pairs in the `predict_taks` dict. During the prediction loop, the `predict_forward` method will be called firstly to prepare some results which should be shared between all the prediction tasks. Then, for each key-value pair in the `predict_tasks` dict, we call `predict_{key}` method in the prediction, with arguments from the `predict_forward` method and `output_path` = `{value}`.
+### Prediction start
+
+We use the `predict_tasks` attr to identify the prediction tasks we have to complete during the prediction. The `LightningModule` accepts a list of str as task names, for each task, we create the output_path for saving prediction results.
+
+Before the prediction loop starts, we first call `predict_<task>_start` method for each task to get the initial state and dependencies, with the following format, for the prediction task.
+
+```python
+{
+    'dependency': [
+        'dependency1',
+        'dependency2',
+    ],
+    'result': <the-initial-state-object>
+}
+```
+
+By default (no `predict_<task>_start` method is defined), the initial state is an empty list, and there is no dependency for the current prediction task.
+
+### Prediction step
+
+Then, for each prediction step, we will calculate all the dependencies we need for the prediction task, and feed the dependencies to the `predict_<task>` method to get the prediction results. If the `predict_<task>` method returns anything instead of `None`, we will assume the initial state is a list and append the result to the list.
+
+### Prediction end
+
+Finally, if a `predict_<task>_end` method is defined, we will call it to save the results to the output_path.
+
+Note that you are responsible for the communication between processes for the prediction tasks if you are using the distributed training.

@@ -338,18 +338,55 @@ class LightningModule(SplitNameMixin, _LightningModule):
                 self.predict_path,
             )
 
-        for name in self.predict_tasks:
-            self.rm_and_create(os.path.join(self.predict_path, name))
+        for task in self.predict_tasks:
+            self.rm_and_create(os.path.join(self.predict_path, task))
+
+        self.predictions = {"dependency": []}
+        for task in self.predict_tasks:
+            if hasattr(self, f"predict_{task}_start"):
+                self.predictions[task] = getattr(self, f"predict_{task}_start")(
+                    output_path=os.path.join(self.predict_path, task), task=task
+                )
+            else:
+                self.predictions[task] = {"dependency": [], "result": []}
+            self.predictions["dependency"].extend(self.predictions[task]["dependency"])
 
     def predict_forward(self, *args, **kwargs):
         return {}
 
     def predict_step(self, *args, **kwargs):
-        res = self.predict_forward(*args, **kwargs)
-        for name in self.predict_tasks:
-            getattr(self, "predict_" + name)(
-                output_path=os.path.join(self.predict_path, name),
+        dependency = {}
+        for dep in self.predictions["dependency"]:
+            assert hasattr(
+                self, f"predict_{dep}_dependency"
+            ), f"dependency {dep} is not supported!"
+            dependency[dep] = getattr(self, f"predict_{dep}_dependency")(
+                *args, **kwargs
+            )
+
+        for task in self.predict_tasks:
+            res = {}
+
+            for dep in self.predictions[task]["dependency"]:
+                res[dep] = dependency[dep]
+
+            result = getattr(self, "predict_" + task)(
+                output_path=os.path.join(self.predict_path, task),
+                task=task,
+                prediction=self.predictions[task]["result"],
                 *args,
                 **kwargs,
                 **res,
             )
+
+            if result is not None:
+                self.predictions[task]["result"].append(result)
+
+    def on_predict_end(self) -> None:
+        for task in self.predict_tasks:
+            if hasattr(self, f"predict_{task}_end"):
+                getattr(self, f"predict_{task}_end")(
+                    output_path=os.path.join(self.predict_path, task),
+                    task=task,
+                    prediction=self.predictions[task]["result"],
+                )
