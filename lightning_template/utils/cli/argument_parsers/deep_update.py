@@ -16,8 +16,10 @@ def deep_update(source, override):
                 for k in delete_keys:
                     if k in source:
                         source.pop(k)
-            elif delete_keys:
+            elif isinstance(delete_keys, bool) and delete_keys:
                 return override
+            else:
+                override["__delete__"] = delete_keys
         for key, value in override.items():
             if isinstance(value, Dict) and key in source:
                 source[key] = deep_update(source[key], value)
