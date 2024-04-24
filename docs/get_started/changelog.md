@@ -11,7 +11,7 @@
 ### Feat
 
 - **deep_update**: delete only meet the syntex
-- **predict**: add predict start, end and dependecies feature
+- **predict**: add predict start, end and dependencies feature
 
 ## 1.11.2 (2024-04-13)
 
