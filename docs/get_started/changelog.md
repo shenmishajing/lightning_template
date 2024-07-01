@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.12.2 (2024-07-01)
+
+### Fix
+
+- **predict**: remove unused predict forward method, update the doc for prediction loop
+
 ## 1.12.1 (2024-04-20)
 
 ### Refactor
