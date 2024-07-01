@@ -83,7 +83,7 @@ By default (no `predict_<task>_start` method is defined), the initial state is a
 
 ### Prediction step
 
-Then, for each prediction step, we will calculate all the dependencies we need for the prediction task, and feed the dependencies to the `predict_<task>` method to get the prediction results. If the `predict_<task>` method returns anything instead of `None`, we will assume the initial state is a list and append the result to the list.
+Then, for each prediction step, we will calculate all the dependencies we need for the prediction task from corresponding `predict_<dep>_depen_dependency` methods, and feed the dependencies to the `predict_<task>` method to get the prediction results. If the `predict_<task>` method returns anything instead of `None`, we will assume the initial state is a list and append the result to the list.
 
 ### Prediction end
 

@@ -360,9 +360,6 @@ class LightningModule(SplitNameMixin, _LightningModule):
 
             self.predictions["dependency"].extend(prediction["dependency"])
 
-    def predict_forward(self, *args, **kwargs):
-        return {}
-
     def predict_step(self, *args, **kwargs):
         dependency = {}
         for dep in self.predictions["dependency"]:
