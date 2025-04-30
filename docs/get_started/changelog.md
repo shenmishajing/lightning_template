@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.12.3 (2025-04-30)
+
+### Fix
+
+- **optim**: fix warmup lr scheduler params bug
+
 ## 1.12.2 (2024-07-01)
 
 ### Fix
