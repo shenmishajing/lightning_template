@@ -13,30 +13,27 @@ class WarmupScheduler(_LRScheduler):
 
     def __init__(
         self,
-        optimizer,
+        *args,
         warmup_iters,
         warmup_ratio=0.1,
         warmup_mode="linear",
-        last_epoch=-1,
-        verbose=False,
+        **kwargs,
     ):
         # validate the "warmup" argument
-        assert (
-            warmup_mode is not None
-            and warmup_mode
-            in [
-                "constant",
-                "linear",
-                "exp",
-            ]
-        ), f'"{warmup_mode}" is not a supported type for warming up, valid types are "constant" and "linear"'
+        assert warmup_mode is not None and warmup_mode in [
+            "constant",
+            "linear",
+            "exp",
+        ], (
+            f'"{warmup_mode}" is not a supported type for warming up, valid types are "constant" and "linear"'
+        )
         assert warmup_iters > 0, '"warmup_iters" must be a positive integer'
         assert 0 < warmup_ratio <= 1.0, '"warmup_ratio" must be in range (0,1]'
 
         self.warmup_iters = warmup_iters
         self.warmup_ratio = warmup_ratio
         self.warmup_mode = warmup_mode
-        super().__init__(optimizer, last_epoch=last_epoch, verbose=verbose)
+        super().__init__(*args, **kwargs)
 
     def get_lr(self):
         if not self._get_lr_called_within_step:
