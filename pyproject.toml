@@ -9,7 +9,7 @@ authors = [{ name = "shenmishajing", email = "shenmishajing@gmail.com" }]
 description = "A template wrapper for pytorch-lightning."
 readme = "README.md"
 license = { text = "MIT License" }
-requires-python = ">=3.8"
+requires-python = ">=3.8, <3.13"
 dependencies = [
     "lightning>=2.0.0",
     "jsonargparse[signatures,urls,fsspec,ruyaml,argcomplete]",
@@ -96,3 +96,25 @@ version_scheme = "pep440"
 version_provider = "scm"
 changelog_file = "docs/get_started/changelog.md"
 update_changelog_on_bump = true
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+
+[tool.pixi.pypi-dependencies]
+lightning-template = { path = ".", editable = true }
+
+[tool.pixi.environments]
+default = { solve-group = "default" }
+all = { features = ["all", "deps", "dev"], solve-group = "default" }
+deps = { features = ["deps", "optional"], solve-group = "default" }
+dev = { features = ["dev", "dev-core", "dev-doc", "dev-build", "dev-test", "dev-profile"], solve-group = "default" }
+dev-build = { features = ["dev-build"], solve-group = "default" }
+dev-commit = { features = ["dev-commit"], solve-group = "default" }
+dev-core = { features = ["dev-core", "dev-commit"], solve-group = "default" }
+dev-doc = { features = ["dev-doc"], solve-group = "default" }
+dev-profile = { features = ["dev-profile"], solve-group = "default" }
+dev-test = { features = ["dev-test"], solve-group = "default" }
+optional = { features = ["optional"], solve-group = "default" }
+
+[tool.pixi.tasks]

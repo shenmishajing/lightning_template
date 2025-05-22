@@ -1,1 +1,5 @@
 /lightning_template/version.py
+
+# pixi environments
+.pixi
+*.egg-info
