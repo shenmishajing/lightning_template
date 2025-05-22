@@ -25,7 +25,7 @@ class SplitNameMixin:
         self.split_names = list(self.SplitNameMap.keys())
 
     def _get_split_names(self, stage=None):
-        if self.trainer.overfit_batches > 0:
+        if self.trainer and self.trainer.overfit_batches > 0:
             split_names = [self.TrainSplit]
         elif stage is None:
             split_names = self.split_names
@@ -37,7 +37,7 @@ class SplitNameMixin:
             else:
                 split_names = [stage.lower()]
 
-            if isinstance(self.trainer.strategy, DeepSpeedStrategy):
+            if self.trainer and isinstance(self.trainer.strategy, DeepSpeedStrategy):
                 split_names = [self.TrainSplit] + split_names
         return split_names
 
