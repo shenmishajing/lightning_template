@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.12.4 (2025-05-22)
+
+### Fix
+
+- **split_name_mixin**: fix self.trainer is None bug
+
 ## 1.12.3 (2025-04-30)
 
 ### Fix
